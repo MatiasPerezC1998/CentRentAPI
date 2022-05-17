@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace CentRent.Models
+﻿namespace CentRent.Entities
 {
-    public partial class Log
+    public partial class User
     {
         public string Email { get; set; } = null!;
         public string? FirstName { get; set; }

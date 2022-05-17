@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using CentRent.Models;
+using CentRent.Entities;
 
 namespace CentRent.Data
 {
@@ -15,8 +15,8 @@ namespace CentRent.Data
         }
 
         public virtual DbSet<Car> Cars { get; set; } = null!;
-        public virtual DbSet<Log> Logs { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
+        public virtual DbSet<Customer> Customers { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -29,7 +29,7 @@ namespace CentRent.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Log>(entity =>
+            modelBuilder.Entity<User>(entity =>
             {
                 entity.HasKey(e => e.Email);
             });

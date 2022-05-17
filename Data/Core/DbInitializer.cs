@@ -1,11 +1,12 @@
 using CentRent.Models;
+using CentRent.Entities;
 
 namespace CentRent.Data {
     public static class DbInitializer {
         public static void Initialize(CentRentContext context) {
             if (context.Cars.Any() &&
-                context.Users.Any() &&
-                context.Logs.Any()) {
+                context.Customers.Any() &&
+                context.Users.Any()) {
 
                 return; //DB has been seeded
             }
@@ -37,8 +38,8 @@ namespace CentRent.Data {
                 }
             };
 
-            var users = new User[] {
-                new User { 
+            var customers = new Customer[] {
+                new Customer { 
                     Id = 1, 
                     Name = "Alberto", 
                     Surname = "Mohedano", 
@@ -47,7 +48,7 @@ namespace CentRent.Data {
                     Dni = "12345678A",
                     CarRentedId = -1
                 },
-                new User { 
+                new Customer { 
                     Id = 2, 
                     Name = "Paca", 
                     Surname = "Moya", 
@@ -56,7 +57,7 @@ namespace CentRent.Data {
                     Dni = "87654321A",
                     CarRentedId = -1
                 },
-                new User { 
+                new Customer { 
                     Id = 3, 
                     Name = "Matias", 
                     Surname = "Perez", 
@@ -67,22 +68,22 @@ namespace CentRent.Data {
                 }
             };
 
-            var logs = new Log[] {
-                new Log {
+            var users = new User[] {
+                new User {
                     FirstName = "Andres",
                     LastName = "Beteta",
                     Email = "ab@gmail.com",
                     Username = "andres",
                     Password = "1"
                 },
-                new Log {
+                new User {
                     FirstName = "Paco",
                     LastName = "Peña",
                     Email = "pp@gmail.com",
                     Username = "paco",
                     Password = "1"
                 },
-                new Log {
+                new User {
                     FirstName = "Matias",
                     LastName = "Perez",
                     Email = "mp@gmail.com",
@@ -92,8 +93,8 @@ namespace CentRent.Data {
             };
 
             context.Cars.AddRange(cars);
+            context.Customers.AddRange(customers);
             context.Users.AddRange(users);
-            context.Logs.AddRange(logs);
             context.SaveChanges();
         }
     }

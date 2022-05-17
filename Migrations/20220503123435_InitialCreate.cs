@@ -12,13 +12,13 @@ namespace CentRent.Migrations
                 name: "Cars",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                    Id = table.Column<long>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(type: "TEXT", nullable: true),
                     Brand = table.Column<string>(type: "TEXT", nullable: true),
                     Type = table.Column<string>(type: "TEXT", nullable: true),
                     Registration = table.Column<string>(type: "TEXT", nullable: true),
-                    IsRented = table.Column<bool>(type: "INTEGER", nullable: false)
+                    IsRented = table.Column<long>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -26,7 +26,25 @@ namespace CentRent.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Logs",
+                name: "Customers",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(type: "TEXT", nullable: true),
+                    Surname = table.Column<string>(type: "TEXT", nullable: true),
+                    Email = table.Column<string>(type: "TEXT", nullable: true),
+                    Phone = table.Column<long>(type: "INTEGER", nullable: false),
+                    Dni = table.Column<string>(type: "TEXT", nullable: true),
+                    CarRentedId = table.Column<long>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Customers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Users",
                 columns: table => new
                 {
                     Email = table.Column<string>(type: "TEXT", nullable: false),
@@ -37,25 +55,7 @@ namespace CentRent.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Logs", x => x.Email);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Users",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "TEXT", nullable: true),
-                    Surname = table.Column<string>(type: "TEXT", nullable: true),
-                    Email = table.Column<string>(type: "TEXT", nullable: true),
-                    Phone = table.Column<int>(type: "INTEGER", nullable: false),
-                    Dni = table.Column<string>(type: "TEXT", nullable: true),
-                    CarRentedId = table.Column<int>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Users", x => x.Id);
+                    table.PrimaryKey("PK_Users", x => x.Email);
                 });
         }
 
@@ -65,7 +65,7 @@ namespace CentRent.Migrations
                 name: "Cars");
 
             migrationBuilder.DropTable(
-                name: "Logs");
+                name: "Customers");
 
             migrationBuilder.DropTable(
                 name: "Users");

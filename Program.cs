@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using CentRent.Helpers;
 using CentRent.Services;
 using CentRent.Data;
+using CentRent.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,10 +22,12 @@ builder.Services.Configure<ApiBehaviorOptions>(opt => {
 });
 
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
-
-builder.Services.AddScoped<ILogService, LogService>();
-builder.Services.AddScoped<ICarService, CarService>();
-builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ICarRepository, CarRepository>();
+builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+builder.Services.AddScoped<IUserBusiness, UserBusiness>();
+builder.Services.AddScoped<ICarBusiness, CarBusiness>();
+builder.Services.AddScoped<ICustomerBusiness, CustomerBusiness>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

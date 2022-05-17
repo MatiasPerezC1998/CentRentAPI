@@ -2,6 +2,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
+using CentRent.Interfaces;
 using CentRent.Services;
 
 namespace CentRent.Helpers;
@@ -15,17 +16,17 @@ public class JwtMiddleware {
         _appSettings = appSettings.Value;
     }
 
-    public async Task Invoke(HttpContext context, ILogService logService) {
+    public async Task Invoke(HttpContext context, IUserBusiness userService) {
         var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
 
         if(token != null) {
-            attachLogToContext(context, logService, token);
+            attachLogToContext(context, userService, token);
         }
 
         await _next(context);
     }
 
-    private void attachLogToContext(HttpContext context, ILogService logService, string token) {
+    private void attachLogToContext(HttpContext context, IUserBusiness userService, string token) {
         try {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
@@ -38,10 +39,10 @@ public class JwtMiddleware {
             }, out SecurityToken validatedToken);
 
             var jwtToken = (JwtSecurityToken)validatedToken;
-            var logEmail = jwtToken.Claims.First(x => x.Type == "email").Value;
+            var userEmail = jwtToken.Claims.First(x => x.Type == "email").Value;
 
             // attach user to context on successful jwt validation
-            context.Items["Log"] = logService.GetById(logEmail);
+            context.Items["Log"] = userService.GetById(userEmail);
         } catch {
             // do nothing if jwt validation fails
             // user is not attached to context so request won't have access to secure routes

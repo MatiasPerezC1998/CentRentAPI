@@ -1,67 +1,80 @@
 using Microsoft.AspNetCore.Mvc;
-
+using CentRent.Helpers;
+using CentRent.Entities;
 using CentRent.Models;
 using CentRent.Services;
-using CentRent.Data;
+using CentRent.Interfaces;
 
 namespace CentRent.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class UserController : ControllerBase {
-    IUserService _service;
+public class UserController : ControllerBase
+{
+    public readonly IUserBusiness _userBusiness;
 
-    public UserController(IUserService service) {
-        _service = service;
+    public UserController(IUserBusiness userBusiness)
+    {
+        _userBusiness = userBusiness;
     }
 
-    [HttpGet]
-    public IEnumerable<User> GetAll() {
-        return _service.GetAll();
+    [Authorize]
+    [HttpGet("Authorization")]
+    public IActionResult GetAll()
+    {
+        var users = _userBusiness.GetAll();
+        return Ok(users);
     }
 
-    [HttpGet("{id}")]
-    public ActionResult<User> Get(int id) {
-        var user = _service.Get(id);
+    [HttpGet("{email}")]
+    public ActionResult<UserResponse> Get(string email)
+    {
+        var login = _userBusiness.GetById(email);
 
-        if(user is not null) {
-            return user;
-        } else {
+        if (login == null)
+        {
             return NotFound();
         }
 
+        return login;
     }
 
-    [HttpPost]
-    public IActionResult Create(User user) {            
-        _service.Add(user);
-        return CreatedAtAction(nameof(Create), new { id = user.Id }, user);
+    [HttpPost("Login")]
+    public ActionResult<LoginResponse> Login([FromForm] UserRequest.LoginRequest model)
+    {
+        var response = _userBusiness.Login(model);
+
+        if (response == null)
+        {
+            return BadRequest(new { message = "Usuario o contraseña incorrectos" });
+        }
+
+        return Ok(response);
     }
 
-    [HttpPost("{id}/update")]
-    public IActionResult Update([FromRoute]int id, [FromForm]User user) {
-        // if (id != user.Id) {
-        //     return BadRequest();
-        // }
-            
-        var existingUser = _service.Get(id);
-        if(existingUser is null)
-            return NotFound();
-    
-        _service.Update(user);           
-    
-        return NoContent();
+    // [HttpGet]
+    // public IEnumerable<Log> GetAll() => _logService.GetAll();
+
+    [HttpPost("Register")]
+    public ActionResult<UserResponse> Register([FromForm] UserRequest.RegisterRequest user)
+    {
+        var newUser = _userBusiness.Register(user);
+        return CreatedAtAction(nameof(Register), new { email = newUser.Email }, newUser);
     }
 
-    [HttpDelete("{id}")]
-    public IActionResult Delete(int id) {
-        var user = _service.Get(id);
-    
+    [HttpDelete("{email}")]
+    public IActionResult Delete(string email)
+    {
+        var user = _userBusiness.Get(email);
+
         if (user is null)
+        {
             return NotFound();
-        
-        _service.Delete(id);
-    
+        }
+
+        _userBusiness.Delete(email);
+
         return NoContent();
     }
+
 }

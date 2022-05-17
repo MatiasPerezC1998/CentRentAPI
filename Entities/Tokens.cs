@@ -1,4 +1,4 @@
-namespace CentRent.Models;
+namespace CentRent.Entities;
 
 public class Tokens {
     public string? Token { get; set; }

@@ -1,66 +1,75 @@
 using Microsoft.AspNetCore.Mvc;
-
 using CentRent.Models;
-using CentRent.Services;
+using CentRent.Interfaces;
 
 namespace CentRent.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class CarController : ControllerBase {
-    ICarService _service;
+public class CarController : ControllerBase
+{
+    public readonly ICarBusiness _carBusiness;
 
-    public CarController(ICarService service) {
-        _service = service;
+    public CarController(ICarBusiness carBusiness)
+    {
+        _carBusiness = carBusiness;
     }
 
     [HttpGet("GetAll")]
-    public IEnumerable<Car> GetAll() {
-        return _service.GetAll();
+    public IEnumerable<CarResponse> GetAll()
+    {
+        return _carBusiness.GetAll();
     }
 
     [HttpGet("{id}")]
-    public ActionResult<Car> Get(int id) {
-        var car = _service.Get(id);
+    public ActionResult<CarResponse> Get(int id)
+    {
+        var car = _carBusiness.Get(id);
 
-        if(car is not null) {
+        if (car is not null)
+        {
             return car;
+            
         } else {
+
+            return NotFound();
+
+        }
+
+    }
+
+    [HttpPost("Create")]
+    public ActionResult<CarResponse> Create([FromForm] CarRequest.CreateRequest car)
+    {
+        var newCar = _carBusiness.Add(car);
+        return CreatedAtAction(nameof(Create), new { id = newCar.Id }, newCar);
+    }
+
+    [HttpPost("Update")]
+    public ActionResult<CarResponse> Update([FromForm] CarRequest.UpdateRequest car)
+    {
+        var carUpdated = _carBusiness.Update(car);
+
+        if (carUpdated != null)
+        {
+            return Ok(carUpdated);
+        }
+
+        return BadRequest("No existe el coche con el id " + car.Id);
+    }
+
+    [HttpPost("Delete")]
+    public IActionResult Delete([FromForm] int id)
+    {
+        var car = _carBusiness.Get(id);
+
+        if (car is null)
+        {
             return NotFound();
         }
-        
-    }
 
-    [HttpPost]
-    public IActionResult Create(Car car) {            
-        _service.Add(car);
-        return CreatedAtAction(nameof(Create), new { id = car.Id }, car);
-    }
-
-    [HttpPost("{id}/update")]
-    public IActionResult Update([FromRoute]int id, [FromForm]Car car) {
-        // if (id != car.Id) {
-        //     return BadRequest();
-        // }
-            
-        var existingCar = _service.Get(id);
-        if(existingCar is null)
-            return NotFound();
-    
-        _service.Update(car);
+        _carBusiness.Delete(id);
 
         return Ok();
-    }
-
-    [HttpDelete("{id}")]
-    public IActionResult Delete(int id) {
-        var car = _service.Get(id);
-    
-        if (car is null)
-            return NotFound();
-        
-        _service.Delete(id);
-    
-        return NoContent();
     }
 }
