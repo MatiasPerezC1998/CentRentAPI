@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using CentRent.Helpers;
 using CentRent.Entities;
 using CentRent.Models;
-using CentRent.Services;
+using CentRent.Business;
 using CentRent.Interfaces;
 
 namespace CentRent.Controllers;

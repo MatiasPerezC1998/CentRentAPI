@@ -10,26 +10,22 @@ using CentRent.Entities;
 using CentRent.Data;
 using CentRent.Interfaces;
 
-namespace CentRent.Services;
+namespace CentRent.Business;
 
 public class UserBusiness : IUserBusiness
 {
-    public readonly CentRentContext _context;
+    private readonly IUserRepository _userRepository;
     private readonly AppSettings _appSettings;
 
-    public UserBusiness(CentRentContext context, IOptions<AppSettings> appSettings)
+    public UserBusiness(IUserRepository userRepository, IOptions<AppSettings> appSettings)
     {
-        _context = context;
+        _userRepository = userRepository;
         _appSettings = appSettings.Value;
     }
 
     public LoginResponse Login(UserRequest.LoginRequest model)
     {
-        var user = _context.Users
-            .SingleOrDefault(x =>
-                x.Username == model.Username &&
-                x.Password == model.Password
-            );
+        var user = _userRepository.Login(model);
 
         // return null if user not found
         if (user == null) return null;
@@ -42,53 +38,30 @@ public class UserBusiness : IUserBusiness
 
     public IEnumerable<UserResponse> GetAll()
     {
-        return _context.Users
-            .Select(p => new UserResponse(p))
-            .AsNoTracking()
-            .ToList();
+        return _userRepository.GetAll();
     }
 
     public UserResponse GetById(string email)
     {
-        var user = _context.Users.FirstOrDefault(x => x.Email == email);
-
-        return new UserResponse(user);
+        return _userRepository.GetById(email);
     }
 
-    public UserResponse? Get(string email)
+    public User Get(string email)
     {
-        var user = _context.Users
-            .AsNoTracking()
-            .SingleOrDefault(p => p.Email == email);
-
-        return new UserResponse(user);
-
+        return _userRepository.Get(email);
     }
 
     public UserResponse Register(UserRequest.RegisterRequest newUser)
     {
-        var user = new User
-        {
-            Email = newUser.Email,
-            FirstName = newUser.FirstName,
-            LastName = newUser.LastName,
-            Password = newUser.Password,
-            Username =  newUser.Username
-        };
-
-        _context.Users.Add(user);
-        _context.SaveChanges();
-
-        return new UserResponse(user);
+        return _userRepository.Register(newUser);
     }
 
     public void Delete(string email)
     {
-        var userToDelete = _context.Users.Find(email);
+        var userToDelete = _userRepository.Get(email);
         if (userToDelete is not null)
         {
-            _context.Users.Remove(userToDelete);
-            _context.SaveChanges();
+            _userRepository.Delete(userToDelete);
         }        
     }
 

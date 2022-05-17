@@ -13,15 +13,13 @@ namespace CentRent.Data;
 public class UserRepository : IUserRepository
 {
     public readonly CentRentContext _context;
-    private readonly AppSettings _appSettings;
 
     public UserRepository(CentRentContext context, IOptions<AppSettings> appSettings)
     {
         _context = context;
-        _appSettings = appSettings.Value;
     }
 
-    public LoginResponse Login(UserRequest.LoginRequest model)
+    public User Login(UserRequest.LoginRequest model)
     {
         var user = _context.Users
             .SingleOrDefault(x =>
@@ -29,13 +27,7 @@ public class UserRepository : IUserRepository
                 x.Password == model.Password
             );
 
-        // return null if user not found
-        if (user == null) return null;
-
-        // authentication successful so generate jwt token
-        var token = generateJwtToken(user);
-
-        return new LoginResponse(user, token);
+        return user;
     }
 
     public IEnumerable<UserResponse> GetAll()
@@ -53,14 +45,13 @@ public class UserRepository : IUserRepository
         return new UserResponse(user);
     }
 
-    public UserResponse? Get(string email)
+    public User Get(string email)
     {
         var user = _context.Users
             .AsNoTracking()
             .SingleOrDefault(p => p.Email == email);
 
-        return new UserResponse(user);
-
+        return user;
     }
 
     public UserResponse Register(UserRequest.RegisterRequest newUser)
@@ -80,29 +71,9 @@ public class UserRepository : IUserRepository
         return new UserResponse(user);
     }
 
-    public void Delete(string email)
+    public void Delete(User user)
     {
-        var userToDelete = _context.Users.Find(email);
-        if (userToDelete is not null)
-        {
-            _context.Users.Remove(userToDelete);
-            _context.SaveChanges();
-        }        
-    }
-
-    private string generateJwtToken(User user)
-    {
-        // generate token that is valid for 7 days
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
-        var time = _appSettings.Time;
-        var tokenDescriptor = new SecurityTokenDescriptor
-        {
-            Subject = new ClaimsIdentity(new[] { new Claim("email", user.Email) }),
-            Expires = DateTime.UtcNow.AddDays(time),
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-        };
-        var token = tokenHandler.CreateToken(tokenDescriptor);
-        return tokenHandler.WriteToken(token);
+        _context.Users.Remove(user);
+        _context.SaveChanges();     
     }
 }

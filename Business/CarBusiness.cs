@@ -3,7 +3,7 @@ using CentRent.Data;
 using CentRent.Interfaces;
 using CentRent.Entities;
 
-namespace CentRent.Services;
+namespace CentRent.Business;
 
 public class CarBusiness : ICarBusiness
 {
