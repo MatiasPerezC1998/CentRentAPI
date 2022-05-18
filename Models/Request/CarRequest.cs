@@ -1,5 +1,3 @@
-using CentRent.Entities;
-
 namespace CentRent.Models
 {
     public class CarRequest
@@ -11,6 +9,7 @@ namespace CentRent.Models
             public string? Type { get; set; }
             public string? Registration { get; set; }
             public int IsRented { get; set; }
+            public string? Image { get; set; }
         }
 
         public class UpdateRequest
@@ -21,6 +20,7 @@ namespace CentRent.Models
             public string? Type { get; set; }
             public string? Registration { get; set; }
             public int IsRented { get; set; }       
+            public string? Image { get; set; }
         }
     }
 }

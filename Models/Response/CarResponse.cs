@@ -10,6 +10,7 @@ namespace CentRent.Models
         public string? Type { get; set; }
         public string? Registration { get; set; }
         public int IsRented { get; set; }
+        public string? Image { get; set; }
 
         // CarResponse Copy Constructor
         public CarResponse (Car car) {
@@ -19,6 +20,7 @@ namespace CentRent.Models
             Type = car.Type;
             IsRented = car.IsRented;
             Registration = car.Registration;
+            Image = car.Image;
         }
     }
 }

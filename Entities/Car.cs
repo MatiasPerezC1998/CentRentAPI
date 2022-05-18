@@ -10,6 +10,7 @@ namespace CentRent.Entities
         public string? Type { get; set; }
         public string? Registration { get; set; }
         public int IsRented { get; set; }
+        public string? Image { get; set; }
 
         // CarRequest Constructors
         public Car(CarRequest.CreateRequest car)
@@ -19,6 +20,7 @@ namespace CentRent.Entities
             Type = car.Type;
             Registration = car.Registration;
             IsRented = car.IsRented;
+            Image = car.Image;
         }
 
         // CarResponse Constructors
@@ -30,6 +32,7 @@ namespace CentRent.Entities
             Name = car.Name;
             Registration = car.Registration;
             Type = car.Type;
+            Image = car.Image;
         }
 
         public Car(CarResponse car, int isRented)
@@ -40,6 +43,7 @@ namespace CentRent.Entities
             Type = car.Type;
             Registration = car.Registration;
             IsRented = isRented;
+            Image = car.Image;
         }
 
         // Car Default Constructor

@@ -69,11 +69,12 @@ public class CarBusiness : ICarBusiness
             var carToUpdate = new Car()
             {
                 Id = getCar.Id,
-                Brand = car.Brand ?? getCar.Brand,
-                IsRented = car.IsRented,
                 Name = car.Name ?? getCar.Name,
+                Brand = car.Brand ?? getCar.Brand,
+                Type = car.Type ?? getCar.Type,
                 Registration = car.Registration ?? getCar.Registration,
-                Type = car.Type ?? getCar.Type
+                IsRented = car.IsRented,
+                Image = car.Image,
             };
             
             return _carRepository.Update(carToUpdate);
