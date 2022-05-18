@@ -38,6 +38,19 @@ public class CarController : ControllerBase
 
     }
 
+    [HttpGet("Registration/{registration}")]
+    public ActionResult<CarResponse> GetCar(string registration)
+    {
+        var car = _carBusiness.GetCar(registration);
+
+        if (car is not null)
+        {
+            return car;
+        } else {
+            return NotFound("No existe ningún coche con esa matrícula");
+        }
+    }
+
     [HttpPost("Create")]
     public ActionResult<CarResponse> Create([FromForm] CarRequest.CreateRequest car)
     {

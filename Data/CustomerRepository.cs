@@ -44,6 +44,7 @@ public class CustomerRepository : ICustomerRepository
         var customer = _context.Customers
             .AsNoTracking()
             .SingleOrDefault(p => p.Email == email);
+            
         if (customer != null)
         {
             return new CustomerResponse(customer);

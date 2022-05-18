@@ -40,14 +40,13 @@ public class CustomerController : ControllerBase
     [HttpGet("Email/{email}")]
     public ActionResult<CustomerResponse> GetCustomer(string email)
     {
-
         var customer = _customerBusiness.GetCustomer(email);
 
         if (customer is not null)
         {
             return customer;
         } else {
-            return NotFound("No existe ningún cliente con ese nombre.");
+            return NotFound("No existe ningún cliente con ese nombre");
         }
     }
 

@@ -29,6 +29,20 @@ public class CarRepository : ICarRepository
         return new CarResponse(car);
     }
 
+    public CarResponse? GetCar(string registration)
+    {
+        var car = _context.Cars
+            .AsNoTracking()
+            .SingleOrDefault(p => p.Registration == registration);
+
+            if (car != null)
+            {
+                return new CarResponse(car);
+            }
+
+            return null;
+    }
+
     public CarResponse Add(CarRequest.CreateRequest newCar)
     {
         var car = new Car(newCar);

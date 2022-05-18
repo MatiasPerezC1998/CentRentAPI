@@ -25,6 +25,11 @@ public class CarBusiness : ICarBusiness
         return _carRepository.Get(id);
     }
 
+    public CarResponse? GetCar(string registration)
+    {
+        return _carRepository.GetCar(registration);
+    }
+
     public CarResponse Add(CarRequest.CreateRequest newCar)
     {
         return _carRepository.Add(newCar);
