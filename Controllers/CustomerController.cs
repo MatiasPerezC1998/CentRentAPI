@@ -37,11 +37,11 @@ public class CustomerController : ControllerBase
         }
     }
 
-    [HttpGet("Name/{name}")]
-    public ActionResult<CustomerResponse> GetCustomer(string name)
+    [HttpGet("Email/{email}")]
+    public ActionResult<CustomerResponse> GetCustomer(string email)
     {
 
-        var customer = _customerBusiness.GetCustomer(name);
+        var customer = _customerBusiness.GetCustomer(email);
 
         if (customer is not null)
         {

@@ -39,11 +39,11 @@ public class CustomerRepository : ICustomerRepository
         return new CustomerResponse(customer);
     }
 
-    public CustomerResponse? GetCustomer(string name)
+    public CustomerResponse? GetCustomer(string email)
     {
         var customer = _context.Customers
             .AsNoTracking()
-            .SingleOrDefault(p => p.Name == name);
+            .SingleOrDefault(p => p.Email == email);
         if (customer != null)
         {
             return new CustomerResponse(customer);

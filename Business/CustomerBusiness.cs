@@ -26,9 +26,9 @@ public class CustomerBusiness : ICustomerBusiness
         return _customerRepository.Get(id);
     }
 
-    public CustomerResponse? GetCustomer(string name)
+    public CustomerResponse? GetCustomer(string email)
     {
-        return _customerRepository.GetCustomer(name);
+        return _customerRepository.GetCustomer(email);
     }
 
     public CustomerResponse Add(CustomerRequest.CreateRequest newCustomer)
