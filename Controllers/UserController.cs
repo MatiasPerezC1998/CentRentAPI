@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using CentRent.Helpers;
-using CentRent.Entities;
 using CentRent.Models;
-using CentRent.Business;
 using CentRent.Interfaces;
 
 namespace CentRent.Controllers;
@@ -29,7 +27,7 @@ public class UserController : ControllerBase
     [HttpGet("{email}")]
     public ActionResult<UserResponse> Get(string email)
     {
-        var login = _userBusiness.GetById(email);
+        var login = _userBusiness.GetByEmail(email);
 
         if (login == null)
         {

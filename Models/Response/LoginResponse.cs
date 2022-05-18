@@ -9,7 +9,7 @@ public class LoginResponse {
     public string? Email { get; }
     public string? Token { get; set; }
 
-
+    // LoginResponse Copy Constructor
     public LoginResponse(User user, string token)
     {
         FirstName = user.FirstName;

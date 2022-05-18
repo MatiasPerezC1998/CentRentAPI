@@ -1,15 +1,12 @@
-using Microsoft.EntityFrameworkCore;
 using CentRent.Models;
 using CentRent.Entities;
-using CentRent.Data;
-using CentRent.Business;
 
 namespace CentRent.Interfaces;
 
 public interface IUserBusiness{
     LoginResponse Login(UserRequest.LoginRequest model);
     IEnumerable<UserResponse> GetAll();
-    UserResponse GetById(string email);
+    UserResponse GetByEmail(string email);
     User Get(string email);
     UserResponse Register(UserRequest.RegisterRequest newUser);
     void Delete(string email);

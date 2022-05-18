@@ -9,6 +9,7 @@ public class UserResponse
     public string? LastName { get; set; }
     public string? Username { get; set; }
 
+    // UserResponse Copy Constructor
     public UserResponse (User user)
     {
         Email = user.Email;

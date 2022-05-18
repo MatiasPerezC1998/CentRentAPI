@@ -31,14 +31,7 @@ public class CarRepository : ICarRepository
 
     public CarResponse Add(CarRequest.CreateRequest newCar)
     {
-        var car = new Car
-        {
-            Name = newCar.Name,
-            Brand = newCar.Brand,
-            Type = newCar.Type,
-            Registration = newCar.Registration,
-            IsRented = newCar.IsRented
-        };
+        var car = new Car(newCar);
 
         _context.Cars.Add(car);
         _context.SaveChanges();

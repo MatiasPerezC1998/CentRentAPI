@@ -54,15 +54,7 @@ public class CustomerRepository : ICustomerRepository
 
     public CustomerResponse Add(CustomerRequest.CreateRequest newCustomer)
     {
-        var customer = new Customer
-        {
-            Name = newCustomer.Name,
-            Surname = newCustomer.Surname,
-            Email = newCustomer.Email,
-            Phone = newCustomer.Phone,
-            Dni = newCustomer.Dni,
-            CarRentedId = newCustomer.CarRentedId
-        };
+        var customer = new Customer(newCustomer);
 
         _context.Customers.Add(customer);
         _context.SaveChanges();

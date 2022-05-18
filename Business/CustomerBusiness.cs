@@ -45,15 +45,8 @@ public class CustomerBusiness : ICustomerBusiness
 
                 if (carResponse != null)
                 {
-                    var carRequest = new Car
-                    {
-                        Id = carResponse.Id,
-                        Name = carResponse.Name,
-                        Brand = carResponse.Brand,
-                        Type = carResponse.Type,
-                        IsRented = 1,
-                        Registration = carResponse.Registration,
-                    };
+                    var carRequest = new Car(carResponse, 1);
+
                     var carUpdated = _carRepository.Update(carRequest);
                 }
             }
@@ -75,30 +68,14 @@ public class CustomerBusiness : ICustomerBusiness
 
                 if (carResponse != null)
                 {
-                    var carRequest = new Car
-                    {
-                        Id = carResponse.Id,
-                        Name = carResponse.Name,
-                        Brand = carResponse.Brand,
-                        Type = carResponse.Type,
-                        IsRented = 0,
-                        Registration = carResponse.Registration,
-                    };
+                    var carRequest = new Car(carResponse, 0);
 
                     _carRepository.Update(carRequest);
                 }
             }
 
-            var customer = new Customer()
-            {
-                Id = customerToDelete.Id,
-                Name = customerToDelete.Name,
-                Surname = customerToDelete.Surname, 
-                Email = customerToDelete.Email,
-                Phone = customerToDelete.Phone,
-                Dni = customerToDelete.Dni,
-                CarRentedId = customerToDelete.CarRentedId
-            };
+            var customer = new Customer(customerToDelete);
+            
 
             _customerRepository.Delete(customer);
         }
@@ -152,16 +129,7 @@ public class CustomerBusiness : ICustomerBusiness
         _carRepository.Update(carToUpdate);
 
         // ACTUALIZAMOS EL CLIENTE
-        var customerToUpdate = new Customer()
-        {
-            Id = customer.Id,
-            Name = customer.Name,
-            Surname = customer.Surname,
-            Email = customer.Email,
-            Phone = customer.Phone,
-            Dni = customer.Dni,
-            CarRentedId = customer.CarRentedId
-        };
+        var customerToUpdate = new Customer(customer);
         
         return _customerRepository.Update(customerToUpdate);
     }
@@ -183,16 +151,7 @@ public class CustomerBusiness : ICustomerBusiness
         _carRepository.Update(carToUpdate);
 
         // ACTUALIZAMOS EL CLIENTE
-        var customerToUpdate = new Customer()
-        {
-            Id = customer.Id,
-            Name = customer.Name,
-            Surname = customer.Surname,
-            Email = customer.Email,
-            Phone = customer.Phone,
-            Dni = customer.Dni,
-            CarRentedId = customer.CarRentedId
-        };
+        var customerToUpdate = new Customer(customer);
 
         return _customerRepository.Update(customerToUpdate);
     }
@@ -229,16 +188,7 @@ public class CustomerBusiness : ICustomerBusiness
         // ACTUALIZAMOS EL CLIENTE
         var newCarResponse = _carRepository.Get(customer.CarRentedId);
 
-        var customerToUpdate = new Customer()
-        {
-            Id = customer.Id,
-            Name = customer.Name,
-            Surname = customer.Surname,
-            Email = customer.Email,
-            Phone = customer.Phone,
-            Dni = customer.Dni,
-            CarRentedId = (newCarResponse != null) ? newCarResponse.Id : 0
-        };
+        var customerToUpdate = new Customer(customer, newCarResponse.Id);
 
         return _customerRepository.Update(customerToUpdate);
     }

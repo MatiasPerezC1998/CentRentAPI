@@ -1,9 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 using CentRent.Helpers;
 using CentRent.Models;
 using CentRent.Entities;
@@ -38,7 +34,7 @@ public class UserRepository : IUserRepository
             .ToList();
     }
 
-    public UserResponse GetById(string email)
+    public UserResponse GetByEmail(string email)
     {
         var user = _context.Users.FirstOrDefault(x => x.Email == email);
 

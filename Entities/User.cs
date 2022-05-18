@@ -1,4 +1,6 @@
-﻿namespace CentRent.Entities
+﻿using CentRent.Models;
+
+namespace CentRent.Entities
 {
     public partial class User
     {

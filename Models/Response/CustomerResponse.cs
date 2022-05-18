@@ -12,6 +12,7 @@ namespace CentRent.Models
         public int Phone { get; set; }
         public int CarRentedId { get; set; }
 
+        // CustomerResponse Copy Constructor
         public CustomerResponse(Customer customer)
         {
             Id = customer.Id;

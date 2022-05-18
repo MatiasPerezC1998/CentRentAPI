@@ -1,4 +1,3 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -41,9 +40,9 @@ public class UserBusiness : IUserBusiness
         return _userRepository.GetAll();
     }
 
-    public UserResponse GetById(string email)
+    public UserResponse GetByEmail(string email)
     {
-        return _userRepository.GetById(email);
+        return _userRepository.GetByEmail(email);
     }
 
     public User Get(string email)

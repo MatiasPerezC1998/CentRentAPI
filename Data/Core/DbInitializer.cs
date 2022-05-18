@@ -1,4 +1,3 @@
-using CentRent.Models;
 using CentRent.Entities;
 
 namespace CentRent.Data {
@@ -95,6 +94,7 @@ namespace CentRent.Data {
             context.Cars.AddRange(cars);
             context.Customers.AddRange(customers);
             context.Users.AddRange(users);
+
             context.SaveChanges();
         }
     }

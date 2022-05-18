@@ -11,6 +11,7 @@ namespace CentRent.Models
         public string? Registration { get; set; }
         public int IsRented { get; set; }
 
+        // CarResponse Copy Constructor
         public CarResponse (Car car) {
             Id = car.Id;
             Name = car.Name;

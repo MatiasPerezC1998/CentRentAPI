@@ -3,7 +3,6 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using CentRent.Interfaces;
-using CentRent.Business;
 
 namespace CentRent.Helpers;
 
@@ -42,7 +41,7 @@ public class JwtMiddleware {
             var userEmail = jwtToken.Claims.First(x => x.Type == "email").Value;
 
             // attach user to context on successful jwt validation
-            context.Items["Log"] = userService.GetById(userEmail);
+            context.Items["Log"] = userService.GetByEmail(userEmail);
         } catch {
             // do nothing if jwt validation fails
             // user is not attached to context so request won't have access to secure routes

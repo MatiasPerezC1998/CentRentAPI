@@ -43,30 +43,13 @@ public class CarBusiness : ICarBusiness
 
                 if (customerResponse != null)
                 {
-                    var customerRequest = new Customer
-                    {
-                        Id = customerResponse.Id,
-                        Name = customerResponse.Name,
-                        Surname = customerResponse.Surname,
-                        Email = customerResponse.Email,
-                        Dni = customerResponse.Dni,
-                        Phone = customerResponse.Phone,
-                        CarRentedId = 0,
-                    };
+                    var customerRequest = new Customer (customerResponse, 0);
 
                     _customerRepository.Update(customerRequest);
                 }
             }
 
-            var car = new Car()
-            {
-                Id = carToDelete.Id,
-                Brand = carToDelete.Brand,
-                IsRented = carToDelete.IsRented,
-                Name = carToDelete.Name,
-                Registration = carToDelete.Registration,
-                Type = carToDelete.Type
-            };
+            var car = new Car(carToDelete);
 
             _carRepository.Delete(car);
         }
