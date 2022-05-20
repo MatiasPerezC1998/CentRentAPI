@@ -32,6 +32,11 @@ public class CarBusiness : ICarBusiness
 
     public CarResponse Add(CarRequest.CreateRequest newCar)
     {
+        if (newCar.File != null)
+        {
+            SaveImage(newCar.File);
+        }
+
         return _carRepository.Add(newCar);
     }
 
@@ -48,7 +53,7 @@ public class CarBusiness : ICarBusiness
 
                 if (customerResponse != null)
                 {
-                    var customerRequest = new Customer (customerResponse, 0);
+                    var customerRequest = new Customer(customerResponse, 0);
 
                     _customerRepository.Update(customerRequest);
                 }
@@ -62,6 +67,11 @@ public class CarBusiness : ICarBusiness
 
     public CarResponse Update(CarRequest.UpdateRequest car)
     {
+        if (car.File != null)
+        {
+            SaveImage(car.File);
+        }
+
         var getCar = _carRepository.Get(car.Id);
 
         if (getCar != null)
@@ -74,12 +84,42 @@ public class CarBusiness : ICarBusiness
                 Type = car.Type ?? getCar.Type,
                 Registration = car.Registration ?? getCar.Registration,
                 IsRented = car.IsRented,
-                Image = car.Image,
+                Image = car?.File?.FileName,
             };
-            
+
             return _carRepository.Update(carToUpdate);
         }
 
         return null;
+    }
+
+    private void SaveImage(IFormFile file)
+    {
+        try
+        {
+            string path = Path.Combine(Directory.GetCurrentDirectory(), "Images", file.FileName);
+
+            Console.WriteLine(path);
+
+            using (Stream stream = new FileStream(path, FileMode.Create))
+            {
+                file.CopyTo(stream);
+            }
+        }
+        catch (Exception ex)
+        {
+
+        }
+    }
+
+    private void DeleteImage(IFormFile file)
+    {
+        //var filePath = Server.MapPath("~/Images/" + file.FileName);
+        string path = Path.Combine(Directory.GetCurrentDirectory(), "Images", file.FileName);
+
+        if (System.IO.File.Exists(path))
+        {
+            System.IO.File.Delete(path);
+        }
     }
 }

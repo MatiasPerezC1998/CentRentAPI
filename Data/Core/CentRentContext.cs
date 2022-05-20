@@ -17,6 +17,7 @@ namespace CentRent.Data
         public virtual DbSet<Car> Cars { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
         public virtual DbSet<Customer> Customers { get; set; } = null!;
+        public virtual DbSet<CarType> CarTypes { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -33,6 +34,10 @@ namespace CentRent.Data
             {
                 entity.HasKey(e => e.Email);
             });
+
+            modelBuilder.Entity<Car>()
+            .HasOne(p => p.CarType)
+            .WithMany(b => b.Cars);
 
             OnModelCreatingPartial(modelBuilder);
         }

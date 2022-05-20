@@ -54,7 +54,7 @@ public class CustomerController : ControllerBase
     public ActionResult<CustomerResponse> Create([FromForm] CustomerRequest.CreateRequest customer)
     {
         var newCustomer = _customerBusiness.Add(customer);
-        return CreatedAtAction(nameof(Create), new { id = newCustomer.Id }, newCustomer);
+        return Ok(newCustomer);
     }
 
     [HttpPost("Update")]

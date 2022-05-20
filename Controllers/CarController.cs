@@ -1,6 +1,7 @@
-using Microsoft.AspNetCore.Mvc;
+
 using CentRent.Models;
 using CentRent.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CentRent.Controllers;
 
@@ -29,13 +30,11 @@ public class CarController : ControllerBase
         if (car is not null)
         {
             return car;
-            
-        } else {
-
-            return NotFound();
-
         }
-
+        else
+        {
+            return NotFound();
+        }
     }
 
     [HttpGet("Registration/{registration}")]
@@ -46,7 +45,9 @@ public class CarController : ControllerBase
         if (car is not null)
         {
             return car;
-        } else {
+        }
+        else
+        {
             return NotFound("No existe ningún coche con esa matrícula");
         }
     }
@@ -55,8 +56,9 @@ public class CarController : ControllerBase
     public ActionResult<CarResponse> Create([FromForm] CarRequest.CreateRequest car)
     {
         var newCar = _carBusiness.Add(car);
-        return CreatedAtAction(nameof(Create), new { id = newCar.Id }, newCar);
+        return Ok(newCar);
     }
+
 
     [HttpPost("Update")]
     public ActionResult<CarResponse> Update([FromForm] CarRequest.UpdateRequest car)
@@ -85,4 +87,14 @@ public class CarController : ControllerBase
 
         return Ok();
     }
+
+    [HttpGet("GetImage")]
+    public ActionResult GetImage(String imageUrl)
+    {
+        string path = Path.Combine(Directory.GetCurrentDirectory(), "Images", imageUrl);
+        var image = System.IO.File.OpenRead(path);
+
+        return File(image, "image/jpg");
+    }
+
 }

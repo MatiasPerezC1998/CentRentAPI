@@ -57,7 +57,7 @@ public class UserController : ControllerBase
     public ActionResult<UserResponse> Register([FromForm] UserRequest.RegisterRequest user)
     {
         var newUser = _userBusiness.Register(user);
-        return CreatedAtAction(nameof(Register), new { email = newUser.Email }, newUser);
+        return Ok(newUser);
     }
 
     [HttpDelete("{email}")]
