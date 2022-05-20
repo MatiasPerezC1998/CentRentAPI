@@ -96,5 +96,4 @@ public class CarController : ControllerBase
 
         return File(image, "image/jpg");
     }
-
 }

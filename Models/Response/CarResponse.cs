@@ -5,22 +5,25 @@ namespace CentRent.Models
     public partial class CarResponse
     {
         public int Id { get; }
-        public string? Name { get; set; }
+        public string? Model { get; set; }
         public string? Brand { get; set; }
         public string? Type { get; set; }
         public string? Registration { get; set; }
         public int IsRented { get; set; }
         public string? Image { get; set; }
+        public int CarTypeId { get; set; }
 
         // CarResponse Copy Constructor
-        public CarResponse (Car car) {
+        public CarResponse(Car car)
+        {
             Id = car.Id;
-            Name = car.Name;
-            Brand = car.Brand;
-            Type = car.Type;
             IsRented = car.IsRented;
             Registration = car.Registration;
-            Image = car.Image;
+            Brand = car.CarType.Brand;
+            Model = car.CarType.Model;
+            Type = car.CarType.Type;
+            Image = car.CarType.Image;
+            CarTypeId = car.CarType.Id;
         }
     }
 }

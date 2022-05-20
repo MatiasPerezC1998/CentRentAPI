@@ -24,9 +24,11 @@ builder.Services.Configure<ApiBehaviorOptions>(opt => {
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICarRepository, CarRepository>();
+builder.Services.AddScoped<ICarTypeRepository, CarTypeRepository>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IUserBusiness, UserBusiness>();
 builder.Services.AddScoped<ICarBusiness, CarBusiness>();
+builder.Services.AddScoped<ICarTypeBusiness, CarTypeBusiness>();
 builder.Services.AddScoped<ICustomerBusiness, CustomerBusiness>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

@@ -15,6 +15,7 @@ public class CarRepository : ICarRepository
     public IEnumerable<CarResponse> GetAll()
     {
         return _context.Cars
+            .Include(x => x.CarType)
             .Select(p => new CarResponse(p))
             .AsNoTracking()
             .ToList();
@@ -23,6 +24,7 @@ public class CarRepository : ICarRepository
     public CarResponse? Get(int id)
     {
         var car = _context.Cars
+            .Include(x => x.CarType)
             .AsNoTracking()
             .SingleOrDefault(p => p.Id == id);
 
@@ -32,15 +34,16 @@ public class CarRepository : ICarRepository
     public CarResponse? GetCar(string registration)
     {
         var car = _context.Cars
+            .Include(x => x.CarType)
             .AsNoTracking()
             .SingleOrDefault(p => p.Registration == registration);
 
-            if (car != null)
-            {
-                return new CarResponse(car);
-            }
+        if (car != null)
+        {
+            return new CarResponse(car);
+        }
 
-            return null;
+        return null;
     }
 
     public CarResponse Add(CarRequest.CreateRequest newCar)
@@ -50,7 +53,7 @@ public class CarRepository : ICarRepository
         _context.Cars.Add(car);
         _context.SaveChanges();
 
-        return new CarResponse(car);
+        return Get(car.Id);
     }
 
     public void Delete(Car car)
@@ -65,6 +68,6 @@ public class CarRepository : ICarRepository
         _context.Cars.Update(car);
         _context.SaveChanges();
 
-        return new CarResponse(car);
+        return Get(car.Id);
     }
 }

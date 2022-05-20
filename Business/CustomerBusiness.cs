@@ -118,9 +118,6 @@ public class CustomerBusiness : ICustomerBusiness
         if (carResponse != null)
         {
             carToUpdate.Id = carResponse.Id;
-            carToUpdate.Name = carResponse.Name;
-            carToUpdate.Brand = carResponse.Brand;
-            carToUpdate.Type = carResponse.Type;
             carToUpdate.Registration = carResponse.Registration;
             carToUpdate.IsRented = 1;
         }
@@ -140,9 +137,6 @@ public class CustomerBusiness : ICustomerBusiness
         if (carResponse != null)
         {
             carToUpdate.Id = carResponse.Id;
-            carToUpdate.Name = carResponse.Name;
-            carToUpdate.Brand = carResponse.Brand;
-            carToUpdate.Type = carResponse.Type;
             carToUpdate.Registration = carResponse.Registration;
             carToUpdate.IsRented = 0;
         }
@@ -162,9 +156,6 @@ public class CustomerBusiness : ICustomerBusiness
         if (oldCarResponse != null)
         {
             carToUpdate.Id = oldCarResponse.Id;
-            carToUpdate.Name = oldCarResponse.Name;
-            carToUpdate.Brand = oldCarResponse.Brand;
-            carToUpdate.Type = oldCarResponse.Type;
             carToUpdate.Registration = oldCarResponse.Registration;
             carToUpdate.IsRented = 0;
         }
@@ -174,9 +165,6 @@ public class CustomerBusiness : ICustomerBusiness
         if (changeCarResponse != null)
         {
             carUpdated.Id = changeCarResponse.Id;
-            carUpdated.Name = changeCarResponse.Name;
-            carUpdated.Brand = changeCarResponse.Brand;
-            carUpdated.Type = changeCarResponse.Type;
             carUpdated.Registration = changeCarResponse.Registration;
             carUpdated.IsRented = 1;
         }

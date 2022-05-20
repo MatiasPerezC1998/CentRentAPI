@@ -18,20 +18,39 @@ namespace CentRent.Migrations
 
             modelBuilder.Entity("CentRent.Entities.Car", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CarTypeId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("IsRented")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Registration")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CarTypeId");
+
+                    b.ToTable("Cars");
+                });
+
+            modelBuilder.Entity("CentRent.Entities.CarType", b =>
+                {
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Brand")
                         .HasColumnType("TEXT");
 
-                    b.Property<long>("IsRented")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Name")
+                    b.Property<string>("Image")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Registration")
+                    b.Property<string>("Model")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Type")
@@ -39,16 +58,16 @@ namespace CentRent.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Cars");
+                    b.ToTable("CarTypes");
                 });
 
             modelBuilder.Entity("CentRent.Entities.Customer", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<long>("CarRentedId")
+                    b.Property<int>("CarRentedId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Dni")
@@ -60,7 +79,7 @@ namespace CentRent.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("TEXT");
 
-                    b.Property<long>("Phone")
+                    b.Property<int>("Phone")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Surname")
@@ -91,6 +110,22 @@ namespace CentRent.Migrations
                     b.HasKey("Email");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("CentRent.Entities.Car", b =>
+                {
+                    b.HasOne("CentRent.Entities.CarType", "CarType")
+                        .WithMany("Cars")
+                        .HasForeignKey("CarTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CarType");
+                });
+
+            modelBuilder.Entity("CentRent.Entities.CarType", b =>
+                {
+                    b.Navigation("Cars");
                 });
 #pragma warning restore 612, 618
         }

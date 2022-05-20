@@ -9,14 +9,17 @@ namespace CentRent.Models
         public string? Model { get; set; }
         public string? Type { get; set; }
         public string? Image { get; set; }
+        public int CarCount { get; set; }
 
         // CarResponse Copy Constructor
-        public CarTypeResponse (CarType car) {
+        public CarTypeResponse(CarType car)
+        {
             Id = car.Id;
             Model = car.Model;
             Brand = car.Brand;
             Type = car.Type;
             Image = car.Image;
+            CarCount = car.Cars.Count;
         }
     }
 }

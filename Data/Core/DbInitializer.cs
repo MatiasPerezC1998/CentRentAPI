@@ -13,25 +13,16 @@ namespace CentRent.Data {
             var cars = new Car[] {
                 new Car {
                     Id = 1,
-                    Name = "Yaris",
-                    Brand = "Toyota",
-                    Type = "Deportivo",
                     Registration = "1863JVK",
                     IsRented = 0
                 },
                 new Car { 
                     Id = 2, 
-                    Name = "Dacia-Logan", 
-                    Brand = "Renault", 
-                    Type = "None", 
                     Registration = "8139RHQ", 
                     IsRented = 0
                 },
                 new Car { 
                     Id = 3, 
-                    Name = "Q3", 
-                    Brand = "Audi", 
-                    Type = "Todoterreno", 
                     Registration = "1998MPC", 
                     IsRented = 0
                 }
