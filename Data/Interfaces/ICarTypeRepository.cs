@@ -6,8 +6,8 @@ namespace CentRent.Data;
 public interface ICarTypeRepository
 {
     IEnumerable<CarTypeResponse> GetAll();
-    CarTypeResponse? Get(int id);
+    CarType? Get(int id);
     CarTypeResponse Add(CarTypeRequest.CreateRequest newCar);
     CarTypeResponse Update(CarType car);
-    void Delete(CarType car);
+    Task Delete(CarType car);
 }

@@ -2,6 +2,7 @@
 using CentRent.Models;
 using CentRent.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using CentRent.Entities;
 
 namespace CentRent.Controllers;
 
@@ -50,6 +51,13 @@ public class CarController : ControllerBase
         {
             return NotFound("No existe ningún coche con esa matrícula");
         }
+    }
+
+    [HttpGet("AvailableCars")]
+    public ActionResult AvailableCars()
+    {
+        var cars = _carBusiness.GetAvailableCarsFromType();
+        return Ok(cars);
     }
 
     [HttpPost("Create")]

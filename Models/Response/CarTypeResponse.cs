@@ -19,7 +19,7 @@ namespace CentRent.Models
             Brand = car.Brand;
             Type = car.Type;
             Image = car.Image;
-            CarCount = car.Cars.Count;
+            CarCount = (car?.Cars?.Count == null) ? 0: car.Cars.Count;
         }
     }
 }

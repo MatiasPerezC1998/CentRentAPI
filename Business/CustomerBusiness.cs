@@ -23,7 +23,12 @@ public class CustomerBusiness : ICustomerBusiness
 
     public CustomerResponse? Get(int id)
     {
-        return _customerRepository.Get(id);
+        var customer = _customerRepository.Get(id);
+        if (customer != null)
+        {
+            return new CustomerResponse(customer);
+        }
+        return null;
     }
 
     public CustomerResponse? GetCustomer(string email)
@@ -55,7 +60,7 @@ public class CustomerBusiness : ICustomerBusiness
         return customerAdded;
     }
 
-    public void Delete(int id)
+    public async Task Delete(int id)
     {
         var customerToDelete = _customerRepository.Get(id);
 
@@ -74,14 +79,11 @@ public class CustomerBusiness : ICustomerBusiness
                 }
             }
 
-            var customer = new Customer(customerToDelete);
-            
-
-            _customerRepository.Delete(customer);
+            await _customerRepository.Delete(customerToDelete);
         }
     }
 
-    public CustomerResponse Update(CustomerRequest.UpdateRequest customer)
+    public async Task<CustomerResponse> Update(CustomerRequest.UpdateRequest customer)
     {
         var oldCustomer = _customerRepository.Get(customer.Id);
         var carToUpdate = new Car();
@@ -92,27 +94,27 @@ public class CustomerBusiness : ICustomerBusiness
             // SETEAMOS ESE COCHE COMO ALQUILADO (1)
             if (customer.CarRentedId > 0 && oldCustomer.CarRentedId == 0)
             {
-                return CustomerAddCar(customer, oldCustomer, carToUpdate);
+                return await CustomerAddCar(customer, carToUpdate);
             }
             // SI EL CLIENTE DEJA DE ALQUILAR UN COCHE, SETEAMOS
             // EL COCHE COMO NO ALQUILADO (0)
             if (oldCustomer.CarRentedId > 0 && customer.CarRentedId == 0)
             {
-                return CustomerRemoveCar(customer, oldCustomer, carToUpdate);
+                return await CustomerRemoveCar(customer, oldCustomer.CarRentedId, carToUpdate);
             }
             // SI EL CLIENTE CAMBIA EL COCHE DE ALQUILER, SETEAMOS EL ANTIGUO
             // A 0 Y LE ASIGNAMOS EL NUEVO COCHE
             if (oldCustomer.CarRentedId > 0 && customer.CarRentedId > 0 &&
                 oldCustomer.CarRentedId != customer.CarRentedId)
             {
-                return CustomerChangeCar(customer, oldCustomer, carToUpdate);
+                return await CustomerChangeCar(customer, oldCustomer.CarRentedId, carToUpdate);
             }
         }
 
         return null;
     }
 
-    public CustomerResponse CustomerAddCar(CustomerRequest.UpdateRequest customer, CustomerResponse oldCustomer, Car carToUpdate)
+    public async Task<CustomerResponse> CustomerAddCar(CustomerRequest.UpdateRequest customer, Car carToUpdate)
     {
         var carResponse = _carRepository.Get(customer.CarRentedId);
         if (carResponse != null)
@@ -120,44 +122,57 @@ public class CustomerBusiness : ICustomerBusiness
             carToUpdate.Id = carResponse.Id;
             carToUpdate.Registration = carResponse.Registration;
             carToUpdate.IsRented = 1;
+            carToUpdate.CarTypeId = carResponse.CarTypeId;
         }
 
         // ACTUALIZAMOS EL COCHE
         _carRepository.Update(carToUpdate);
 
         // ACTUALIZAMOS EL CLIENTE
-        var customerToUpdate = new Customer(customer);
-        
-        return _customerRepository.Update(customerToUpdate);
+        var customerToUpdate = _customerRepository.Get(customer.Id);
+        if (customerToUpdate != null)
+        {
+            customerToUpdate.CarRentedId = customer.CarRentedId;
+            return await _customerRepository.Update(customerToUpdate);
+        }
+
+        return null;
     }
 
-    public CustomerResponse CustomerRemoveCar(CustomerRequest.UpdateRequest customer, CustomerResponse oldCustomer, Car carToUpdate)
+    public async Task<CustomerResponse> CustomerRemoveCar(CustomerRequest.UpdateRequest customer, int carId, Car carToUpdate)
     {
-        var carResponse = _carRepository.Get(oldCustomer.CarRentedId);
+        var carResponse = _carRepository.Get(carId);
         if (carResponse != null)
         {
             carToUpdate.Id = carResponse.Id;
             carToUpdate.Registration = carResponse.Registration;
             carToUpdate.IsRented = 0;
+            carToUpdate.CarTypeId = carResponse.CarTypeId;
         }
 
         // ACTUALIZAMOS EL COCHE
         _carRepository.Update(carToUpdate);
 
         // ACTUALIZAMOS EL CLIENTE
-        var customerToUpdate = new Customer(customer);
+        var customerToUpdate = _customerRepository.Get(customer.Id);
+        if (customerToUpdate != null)
+        {
+            customerToUpdate.CarRentedId = 0;
+            return await _customerRepository.Update(customerToUpdate);
+        }
 
-        return _customerRepository.Update(customerToUpdate);
+        return null;
     }
 
-    public CustomerResponse CustomerChangeCar(CustomerRequest.UpdateRequest customer, CustomerResponse oldCustomer, Car carToUpdate)
+    public async Task<CustomerResponse> CustomerChangeCar(CustomerRequest.UpdateRequest customer, int carId, Car carToUpdate)
     {
-        var oldCarResponse = _carRepository.Get(oldCustomer.CarRentedId);
+        var oldCarResponse = _carRepository.Get(carId);
         if (oldCarResponse != null)
         {
             carToUpdate.Id = oldCarResponse.Id;
             carToUpdate.Registration = oldCarResponse.Registration;
             carToUpdate.IsRented = 0;
+            carToUpdate.CarTypeId = oldCarResponse.CarTypeId;
         }
 
         var changeCarResponse = _carRepository.Get(customer.CarRentedId);
@@ -167,6 +182,7 @@ public class CustomerBusiness : ICustomerBusiness
             carUpdated.Id = changeCarResponse.Id;
             carUpdated.Registration = changeCarResponse.Registration;
             carUpdated.IsRented = 1;
+            carUpdated.CarTypeId = changeCarResponse.CarTypeId;
         }
 
         // ACTUALIZAMOS LOS COCHE
@@ -174,10 +190,13 @@ public class CustomerBusiness : ICustomerBusiness
         _carRepository.Update(carUpdated);
 
         // ACTUALIZAMOS EL CLIENTE
-        var newCarResponse = _carRepository.Get(customer.CarRentedId);
+        var customerToUpdate = _customerRepository.Get(customer.Id);
+        if (customerToUpdate != null)
+        {
+            customerToUpdate.CarRentedId = customer.CarRentedId;
+            return await _customerRepository.Update(customerToUpdate);
+        }
 
-        var customerToUpdate = new Customer(customer, newCarResponse.Id);
-
-        return _customerRepository.Update(customerToUpdate);
+        return null;
     }
 }

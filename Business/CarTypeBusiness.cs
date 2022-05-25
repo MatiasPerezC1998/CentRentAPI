@@ -8,10 +8,14 @@ namespace CentRent.Business;
 public class CarTypeBusiness : ICarTypeBusiness
 {
     public readonly ICarTypeRepository _carTypeRepository;
+    public readonly ICarRepository _carRepository;
+    public readonly ICarBusiness _carBusiness;
 
-    public CarTypeBusiness(ICarTypeRepository carTypeRepository)
+    public CarTypeBusiness(ICarTypeRepository carTypeRepository, ICarRepository carRepository, ICarBusiness carBusiness)
     {
         _carTypeRepository = carTypeRepository;
+        _carRepository = carRepository;
+        _carBusiness = carBusiness;
     }
 
     public IEnumerable<CarTypeResponse> GetAll()
@@ -21,7 +25,12 @@ public class CarTypeBusiness : ICarTypeBusiness
 
     public CarTypeResponse? Get(int id)
     {
-        return _carTypeRepository.Get(id);
+        var car = _carTypeRepository.Get(id);
+        if (car != null)
+        {
+            return new CarTypeResponse(car);
+        }
+        return null;
     }
 
     public CarTypeResponse Add(CarTypeRequest.CreateRequest newCar)
@@ -34,14 +43,19 @@ public class CarTypeBusiness : ICarTypeBusiness
         return _carTypeRepository.Add(newCar);
     }
 
-    public void Delete(int id)
+    public async Task Delete(int id)
     {
-        var carToDelete = _carTypeRepository.Get(id);
+        var carTypeToDelete = _carTypeRepository.Get(id);
 
-        if (carToDelete != null)
+        if (carTypeToDelete != null)
         {
-            var car = new CarType(carToDelete);
-            _carTypeRepository.Delete(car);
+            var carsToDelete = await _carRepository.GetCarTypeId(id);
+            if (carsToDelete.Count > 0)
+            {
+                await _carBusiness.CustomerFinishRentingFromType(carsToDelete);
+            }
+
+            await _carTypeRepository.Delete(carTypeToDelete);
         }
     }
 
@@ -52,20 +66,13 @@ public class CarTypeBusiness : ICarTypeBusiness
             SaveImage(car.File);
         }
 
-        var getCar = _carTypeRepository.Get(car.Id);
+        var getCarType = _carTypeRepository.Get(car.Id);
 
-        if (getCar != null)
+        if (getCarType != null)
         {
-            var carToUpdate = new CarType()
-            {
-                Id = getCar.Id,
-                Brand = getCar.Brand,
-                Model = getCar.Model,
-                Type = getCar.Type,
-                Image = getCar.Image
-            };
+            var carTypeToUpdate = new CarType(car);
 
-            return _carTypeRepository.Update(carToUpdate);
+            return _carTypeRepository.Update(carTypeToUpdate);
         }
 
         return null;

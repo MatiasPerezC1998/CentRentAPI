@@ -8,6 +8,6 @@ public interface ICustomerBusiness
     CustomerResponse? Get(int id);
     CustomerResponse? GetCustomer(string email);
     CustomerResponse Add(CustomerRequest.CreateRequest newCustomer);
-    CustomerResponse Update(CustomerRequest.UpdateRequest customer);
-    void Delete(int id);
+    Task<CustomerResponse> Update(CustomerRequest.UpdateRequest customer);
+    Task Delete(int id);
 }

@@ -30,12 +30,17 @@ public class CarBusiness : ICarBusiness
         return _carRepository.GetCar(registration);
     }
 
+    public IEnumerable<Car> GetAvailableCarsFromType()
+    {
+        return _carRepository.GetAvailableCars();
+    }
+
     public CarResponse Add(CarRequest.CreateRequest newCar)
     {
         return _carRepository.Add(newCar);
     }
 
-    public void Delete(int id)
+    public async Task Delete(int id)
     {
         var carToDelete = _carRepository.Get(id);
 
@@ -44,20 +49,42 @@ public class CarBusiness : ICarBusiness
             // SI SE ELIMINA UN COCHE SU CLIENTE PASA A NO TENER COCHE DE ALQUILER
             if (carToDelete.IsRented > 0)
             {
-                var customerResponse = _customerRepository.GetCustomerFromCarRented(carToDelete.Id);
+                var customerResponse = await _customerRepository.GetCustomerFromCarRented(carToDelete.Id);
 
                 if (customerResponse != null)
                 {
-                    var customerRequest = new Customer(customerResponse, 0);
+                    // var customerRequest = new Customer(customerResponse, 0);
+                    customerResponse.CarRentedId = 0;
 
-                    _customerRepository.Update(customerRequest);
+                    await _customerRepository.Update(customerResponse);
                 }
             }
 
             var car = new Car(carToDelete);
 
-            _carRepository.Delete(car);
+            await _carRepository.Delete(car);
         }
+    }
+
+    public async Task CustomerFinishRentingFromType(IEnumerable<Car> carsToDelete)
+    {
+        for (int i = 0; i < carsToDelete.Count(); i++)
+        {
+            if (carsToDelete.ElementAt(i).IsRented > 0)
+            {
+                var customerResponse = await _customerRepository.GetCustomerFromCarRented(carsToDelete.ElementAt(i).Id);
+
+                if (customerResponse != null)
+                {
+                    // var customerRequest = new Customer(customerResponse, 0);
+                    customerResponse.CarRentedId = 0;
+
+                    await _customerRepository.Update(customerResponse);
+                }
+            }
+        }
+
+        await _carRepository.DeleteCarsFromType(carsToDelete);
     }
 
     public CarResponse Update(CarRequest.UpdateRequest car)

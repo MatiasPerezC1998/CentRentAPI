@@ -30,7 +30,6 @@ public class UserRepository : IUserRepository
     {
         return _context.Users
             .Select(p => new UserResponse(p))
-            .AsNoTracking()
             .ToList();
     }
 

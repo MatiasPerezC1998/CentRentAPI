@@ -17,34 +17,32 @@ public class CustomerRepository : ICustomerRepository
     {
         return _context.Customers
             .Select(p => new CustomerResponse(p))
-            .AsNoTracking()
             .ToList();
     }
 
-    public CustomerResponse? Get(int id)
+    public Customer? Get(int id)
     {
-        var customer = _context.Customers
-            .AsNoTracking()
+        return _context.Customers
             .SingleOrDefault(p => p.Id == id);
-
-        return new CustomerResponse(customer);
     }
 
-    public CustomerResponse GetCustomerFromCarRented(int id)
+    public async Task<Customer> GetCustomerFromCarRented(int id)
     {
-        var customer = _context.Customers
-            .AsNoTracking()
-            .SingleOrDefault(p => p.CarRentedId == id);
+        return await _context.Customers.SingleOrDefaultAsync(p => p.CarRentedId == id);
+        // var customer = await _context.Customers.SingleOrDefaultAsync(p => p.CarRentedId == id);
+        // if (customer != null)
+        // {
+        //     return new CustomerResponse(customer);
+        // }
 
-        return new CustomerResponse(customer);
+        // return null;
     }
 
     public CustomerResponse? GetCustomer(string email)
     {
         var customer = _context.Customers
-            .AsNoTracking()
             .SingleOrDefault(p => p.Email == email);
-            
+
         if (customer != null)
         {
             return new CustomerResponse(customer);
@@ -55,25 +53,38 @@ public class CustomerRepository : ICustomerRepository
 
     public CustomerResponse Add(CustomerRequest.CreateRequest newCustomer)
     {
+        var transaction = _context.Database.BeginTransaction();
         var customer = new Customer(newCustomer);
 
         _context.Customers.Add(customer);
         _context.SaveChanges();
+        transaction.Commit();
 
         return new CustomerResponse(customer);
     }
 
-    public void Delete(Customer customer)
+    public async Task Delete(Customer customer)
     {
+        var transaction = _context.Database.BeginTransaction();
         _context.Customers.Remove(customer);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
+        await transaction.CommitAsync();
     }
 
-    public CustomerResponse Update(Customer customer)
+    public async Task<CustomerResponse> Update(Customer customer)
     {
-        _context.Customers.Update(customer);
-        _context.SaveChanges();
+        try
+        {
+            var transaction = _context.Database.BeginTransaction();
+            _context.Customers.Update(customer);
+            await _context.SaveChangesAsync();
+            await transaction.CommitAsync();
 
-        return new CustomerResponse(customer);
+            return new CustomerResponse(customer);
+        }
+        catch (Exception ex)
+        {
+            return null;
+        }
     }
 }

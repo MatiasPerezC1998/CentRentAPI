@@ -58,9 +58,9 @@ public class CustomerController : ControllerBase
     }
 
     [HttpPost("Update")]
-    public ActionResult<CustomerResponse> Update([FromForm] CustomerRequest.UpdateRequest customer)
+    public async Task<ActionResult<CustomerResponse>> Update([FromForm] CustomerRequest.UpdateRequest customer)
     {
-        var customerUpdated = _customerBusiness.Update(customer);
+        var customerUpdated = await _customerBusiness.Update(customer);
 
         if (customerUpdated != null)
         {

@@ -17,42 +17,45 @@ public class CarTypeRepository : ICarTypeRepository
         return _context.CarTypes
             .Include(x => x.Cars)
             .Select(p => new CarTypeResponse(p))
-            .AsNoTracking()
             .ToList();
     }
 
-    public CarTypeResponse? Get(int id)
+    public CarType? Get(int id)
     {
-        var carType = _context.CarTypes
+        return _context.CarTypes
             .Include(x => x.Cars)
-            .AsNoTracking()
             .SingleOrDefault(p => p.Id == id);
-
-        return new CarTypeResponse(carType);
     }
 
     public CarTypeResponse Add(CarTypeRequest.CreateRequest newCarType)
     {
+        var transaction = _context.Database.BeginTransaction();
         var carType = new CarType(newCarType);
 
         _context.CarTypes.Add(carType);
         _context.SaveChanges();
+        transaction.Commit();
 
         return new CarTypeResponse(carType);
     }
 
-    public void Delete(CarType carType)
+    public async Task Delete(CarType carType)
     {
+        var transaction = _context.Database.BeginTransaction();
         _context.CarTypes.Remove(carType);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
+        await transaction.CommitAsync();
     }
 
 
     public CarTypeResponse Update(CarType carType)
     {
+        var transaction = _context.Database.BeginTransaction();
         _context.CarTypes.Update(carType);
         _context.SaveChanges();
+        transaction.Commit();
 
         return new CarTypeResponse(carType);
     }
+
 }

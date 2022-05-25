@@ -48,11 +48,11 @@ public class CarTypeController : ControllerBase
     [HttpPost("Update")]
     public ActionResult<CarTypeResponse> Update([FromForm] CarTypeRequest.UpdateRequest carType)
     {
-        var carUpdated = _carTypeBusiness.Update(carType);
+        var carTypeUpdated = _carTypeBusiness.Update(carType);
 
-        if (carUpdated != null)
+        if (carTypeUpdated != null)
         {
-            return Ok(carUpdated);
+            return Ok(carTypeUpdated);
         }
 
         return BadRequest("No existe el coche con el id " + carType.Id);

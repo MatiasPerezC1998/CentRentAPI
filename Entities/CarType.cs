@@ -21,6 +21,15 @@ namespace CentRent.Entities
             Image = car?.File?.FileName;
         }
 
+        public CarType(CarTypeRequest.UpdateRequest car)
+        {
+            Id = car.Id;
+            Model = car.Model;
+            Brand = car.Brand;
+            Type = car.Type;
+            Image = car?.File?.FileName;
+        }
+
         // CarResponse Constructors
         public CarType(CarTypeResponse car)
         {

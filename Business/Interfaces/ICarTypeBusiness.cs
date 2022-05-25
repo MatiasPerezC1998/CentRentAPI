@@ -8,5 +8,5 @@ public interface ICarTypeBusiness
     CarTypeResponse? Get(int id);
     CarTypeResponse Add(CarTypeRequest.CreateRequest newCar);
     CarTypeResponse Update(CarTypeRequest.UpdateRequest car);
-    void Delete(int id);
+    Task Delete(int id);
 }
