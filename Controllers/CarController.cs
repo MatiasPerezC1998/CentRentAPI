@@ -1,8 +1,6 @@
-
 using CentRent.Models;
 using CentRent.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using CentRent.Entities;
 
 namespace CentRent.Controllers;
 
@@ -18,15 +16,15 @@ public class CarController : ControllerBase
     }
 
     [HttpGet("GetAll")]
-    public IEnumerable<CarResponse> GetAll()
+    public async Task<IEnumerable<CarResponse>> GetAll()
     {
-        return _carBusiness.GetAll();
+        return await _carBusiness.GetAll();
     }
 
     [HttpGet("{id}")]
-    public ActionResult<CarResponse> Get(int id)
+    public async Task<ActionResult<CarResponse>> Get(int id)
     {
-        var car = _carBusiness.Get(id);
+        var car = await _carBusiness.Get(id);
 
         if (car is not null)
         {
@@ -39,9 +37,9 @@ public class CarController : ControllerBase
     }
 
     [HttpGet("Registration/{registration}")]
-    public ActionResult<CarResponse> GetCar(string registration)
+    public async Task<ActionResult<CarResponse>> GetCar(string registration)
     {
-        var car = _carBusiness.GetCar(registration);
+        var car = await _carBusiness.GetCar(registration);
 
         if (car is not null)
         {
@@ -54,24 +52,24 @@ public class CarController : ControllerBase
     }
 
     [HttpGet("AvailableCars")]
-    public ActionResult AvailableCars()
+    public async Task<ActionResult> AvailableCars()
     {
-        var cars = _carBusiness.GetAvailableCarsFromType();
+        var cars = await _carBusiness.GetAvailableCarsFromType();
         return Ok(cars);
     }
 
     [HttpPost("Create")]
-    public ActionResult<CarResponse> Create([FromForm] CarRequest.CreateRequest car)
+    public async Task<ActionResult<CarResponse>> Create([FromForm] CarRequest.CreateRequest car)
     {
-        var newCar = _carBusiness.Add(car);
+        var newCar = await _carBusiness.Add(car);
         return Ok(newCar);
     }
 
 
     [HttpPost("Update")]
-    public ActionResult<CarResponse> Update([FromForm] CarRequest.UpdateRequest car)
+    public async Task<ActionResult<CarResponse>> Update([FromForm] CarRequest.UpdateRequest car)
     {
-        var carUpdated = _carBusiness.Update(car);
+        var carUpdated = await _carBusiness.Update(car);
 
         if (carUpdated != null)
         {
@@ -82,16 +80,16 @@ public class CarController : ControllerBase
     }
 
     [HttpPost("Delete")]
-    public IActionResult Delete([FromForm] int id)
+    public async Task<IActionResult> Delete([FromForm] int id)
     {
-        var car = _carBusiness.Get(id);
+        var car = await _carBusiness.Get(id);
 
         if (car is null)
         {
             return NotFound();
         }
 
-        _carBusiness.Delete(id);
+        await _carBusiness.Delete(id);
 
         return Ok();
     }

@@ -23,9 +23,9 @@ public class CarTypeBusiness : ICarTypeBusiness
         return _carTypeRepository.GetAll();
     }
 
-    public CarTypeResponse? Get(int id)
+    public async Task<CarTypeResponse?> Get(int id)
     {
-        var car = _carTypeRepository.Get(id);
+        var car = await _carTypeRepository.Get(id);
         if (car != null)
         {
             return new CarTypeResponse(car);
@@ -33,19 +33,19 @@ public class CarTypeBusiness : ICarTypeBusiness
         return null;
     }
 
-    public CarTypeResponse Add(CarTypeRequest.CreateRequest newCar)
+    public async Task<CarTypeResponse> Add(CarTypeRequest.CreateRequest newCar)
     {
         if (newCar.File != null)
         {
             SaveImage(newCar.File);
         }
 
-        return _carTypeRepository.Add(newCar);
+        return await _carTypeRepository.Add(newCar);
     }
 
     public async Task Delete(int id)
     {
-        var carTypeToDelete = _carTypeRepository.Get(id);
+        var carTypeToDelete = await _carTypeRepository.Get(id);
 
         if (carTypeToDelete != null)
         {
@@ -59,20 +59,20 @@ public class CarTypeBusiness : ICarTypeBusiness
         }
     }
 
-    public CarTypeResponse Update(CarTypeRequest.UpdateRequest car)
+    public async Task<CarTypeResponse> Update(CarTypeRequest.UpdateRequest car)
     {
         if (car.File != null)
         {
             SaveImage(car.File);
         }
 
-        var getCarType = _carTypeRepository.Get(car.Id);
+        var getCarType = await _carTypeRepository.Get(car.Id);
 
         if (getCarType != null)
         {
             var carTypeToUpdate = new CarType(car);
 
-            return _carTypeRepository.Update(carTypeToUpdate);
+            return await _carTypeRepository.Update(carTypeToUpdate);
         }
 
         return null;

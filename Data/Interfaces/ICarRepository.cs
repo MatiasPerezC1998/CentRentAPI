@@ -5,13 +5,13 @@ namespace CentRent.Data;
 
 public interface ICarRepository
 {
-    IEnumerable<CarResponse> GetAll();
-    CarResponse? Get(int id);
-    CarResponse? GetCar(string registration);
+    Task<IEnumerable<CarResponse>> GetAll();
+    Task<CarResponse?> Get(int id);
+    Task<CarResponse?> GetCar(string registration);
     Task<List<Car>> GetCarTypeId(int carTypeId);
-    IEnumerable<Car> GetAvailableCars();
-    CarResponse Add(CarRequest.CreateRequest newCar);
-    CarResponse Update(Car car);
+    Task<IEnumerable<Car>> GetAvailableCars();
+    Task<CarResponse> Add(CarRequest.CreateRequest newCar);
+    Task<CarResponse> Update(Car car);
     Task Delete(Car car);
     Task DeleteCarsFromType(IEnumerable<Car> carsToDelete);
 }

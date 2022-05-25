@@ -16,15 +16,15 @@ public class CustomerController : ControllerBase
     }
 
     [HttpGet("GetAll")]
-    public IEnumerable<CustomerResponse> GetAll()
+    public async Task<IEnumerable<CustomerResponse>> GetAll()
     {
-        return _customerBusiness.GetAll();
+        return await _customerBusiness.GetAll();
     }
 
     [HttpGet("{id}")]
-    public ActionResult<CustomerResponse> Get(int id)
+    public async Task<ActionResult<CustomerResponse>> Get(int id)
     {
-        var customer = _customerBusiness.Get(id);
+        var customer = await _customerBusiness.Get(id);
 
         if (customer is not null)
         {
@@ -38,9 +38,9 @@ public class CustomerController : ControllerBase
     }
 
     [HttpGet("Email/{email}")]
-    public ActionResult<CustomerResponse> GetCustomer(string email)
+    public async Task<ActionResult<CustomerResponse>> GetCustomer(string email)
     {
-        var customer = _customerBusiness.GetCustomer(email);
+        var customer = await _customerBusiness.GetCustomer(email);
 
         if (customer is not null)
         {
@@ -51,9 +51,9 @@ public class CustomerController : ControllerBase
     }
 
     [HttpPost("Create")]
-    public ActionResult<CustomerResponse> Create([FromForm] CustomerRequest.CreateRequest customer)
+    public async Task<ActionResult<CustomerResponse>> Create([FromForm] CustomerRequest.CreateRequest customer)
     {
-        var newCustomer = _customerBusiness.Add(customer);
+        var newCustomer = await _customerBusiness.Add(customer);
         return Ok(newCustomer);
     }
 
@@ -71,14 +71,14 @@ public class CustomerController : ControllerBase
     }
 
     [HttpPost("Delete")]
-    public IActionResult Delete([FromForm] int id)
+    public async Task<IActionResult> Delete([FromForm] int id)
     {
-        var customer = _customerBusiness.Get(id);
+        var customer = await _customerBusiness.Get(id);
 
         if (customer is null)
             return NotFound();
 
-        _customerBusiness.Delete(id);
+        await _customerBusiness.Delete(id);
 
         return Ok();
     }

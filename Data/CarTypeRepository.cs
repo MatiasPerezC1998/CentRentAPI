@@ -20,21 +20,21 @@ public class CarTypeRepository : ICarTypeRepository
             .ToList();
     }
 
-    public CarType? Get(int id)
+    public async Task<CarType?> Get(int id)
     {
-        return _context.CarTypes
+        return await _context.CarTypes
             .Include(x => x.Cars)
-            .SingleOrDefault(p => p.Id == id);
+            .SingleOrDefaultAsync(p => p.Id == id);
     }
 
-    public CarTypeResponse Add(CarTypeRequest.CreateRequest newCarType)
+    public async Task<CarTypeResponse> Add(CarTypeRequest.CreateRequest newCarType)
     {
         var transaction = _context.Database.BeginTransaction();
         var carType = new CarType(newCarType);
 
         _context.CarTypes.Add(carType);
-        _context.SaveChanges();
-        transaction.Commit();
+        await _context.SaveChangesAsync();
+        await transaction.CommitAsync();
 
         return new CarTypeResponse(carType);
     }
@@ -48,12 +48,12 @@ public class CarTypeRepository : ICarTypeRepository
     }
 
 
-    public CarTypeResponse Update(CarType carType)
+    public async Task<CarTypeResponse> Update(CarType carType)
     {
         var transaction = _context.Database.BeginTransaction();
         _context.CarTypes.Update(carType);
-        _context.SaveChanges();
-        transaction.Commit();
+        await _context.SaveChangesAsync();
+        await transaction.CommitAsync();
 
         return new CarTypeResponse(carType);
     }

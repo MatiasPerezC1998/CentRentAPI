@@ -23,9 +23,9 @@ public class CarTypeController : ControllerBase
     }
 
     [HttpGet("GetById")]
-    public ActionResult<CarTypeResponse> Get(int id)
+    public async Task<ActionResult<CarTypeResponse>> Get(int id)
     {
-        var carType = _carTypeBusiness.Get(id);
+        var carType = await _carTypeBusiness.Get(id);
 
         if (carType is not null)
         {
@@ -38,17 +38,17 @@ public class CarTypeController : ControllerBase
     }
 
     [HttpPost("Create")]
-    public ActionResult<CarTypeResponse> Create([FromForm] CarTypeRequest.CreateRequest carType)
+    public async Task<ActionResult<CarTypeResponse>> Create([FromForm] CarTypeRequest.CreateRequest carType)
     {
-        var newCarType = _carTypeBusiness.Add(carType);
+        var newCarType = await _carTypeBusiness.Add(carType);
         return Ok(newCarType);
     }
 
 
     [HttpPost("Update")]
-    public ActionResult<CarTypeResponse> Update([FromForm] CarTypeRequest.UpdateRequest carType)
+    public async Task<ActionResult<CarTypeResponse>> Update([FromForm] CarTypeRequest.UpdateRequest carType)
     {
-        var carTypeUpdated = _carTypeBusiness.Update(carType);
+        var carTypeUpdated = await _carTypeBusiness.Update(carType);
 
         if (carTypeUpdated != null)
         {

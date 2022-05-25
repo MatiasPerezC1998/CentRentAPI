@@ -13,22 +13,23 @@ public class CustomerRepository : ICustomerRepository
         _context = context;
     }
 
-    public IEnumerable<CustomerResponse> GetAll()
+    public async Task<IEnumerable<CustomerResponse>> GetAll()
     {
-        return _context.Customers
+        return await _context.Customers
             .Select(p => new CustomerResponse(p))
-            .ToList();
+            .ToListAsync();
     }
 
-    public Customer? Get(int id)
+    public async Task<Customer?> Get(int id)
     {
-        return _context.Customers
-            .SingleOrDefault(p => p.Id == id);
+        return await _context.Customers
+            .SingleOrDefaultAsync(p => p.Id == id);
     }
 
     public async Task<Customer> GetCustomerFromCarRented(int id)
     {
-        return await _context.Customers.SingleOrDefaultAsync(p => p.CarRentedId == id);
+        return await _context.Customers
+            .SingleOrDefaultAsync(p => p.CarRentedId == id);
         // var customer = await _context.Customers.SingleOrDefaultAsync(p => p.CarRentedId == id);
         // if (customer != null)
         // {
@@ -38,10 +39,10 @@ public class CustomerRepository : ICustomerRepository
         // return null;
     }
 
-    public CustomerResponse? GetCustomer(string email)
+    public async Task<CustomerResponse?> GetCustomer(string email)
     {
-        var customer = _context.Customers
-            .SingleOrDefault(p => p.Email == email);
+        var customer = await _context.Customers
+            .SingleOrDefaultAsync(p => p.Email == email);
 
         if (customer != null)
         {
@@ -51,14 +52,14 @@ public class CustomerRepository : ICustomerRepository
         return null;
     }
 
-    public CustomerResponse Add(CustomerRequest.CreateRequest newCustomer)
+    public async Task<CustomerResponse> Add(CustomerRequest.CreateRequest newCustomer)
     {
         var transaction = _context.Database.BeginTransaction();
         var customer = new Customer(newCustomer);
 
         _context.Customers.Add(customer);
-        _context.SaveChanges();
-        transaction.Commit();
+        await _context.SaveChangesAsync();
+        await transaction.CommitAsync();
 
         return new CustomerResponse(customer);
     }

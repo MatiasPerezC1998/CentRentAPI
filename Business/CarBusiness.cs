@@ -15,34 +15,34 @@ public class CarBusiness : ICarBusiness
         _customerRepository = customerRepository;
     }
 
-    public IEnumerable<CarResponse> GetAll()
+    public async Task<IEnumerable<CarResponse>> GetAll()
     {
-        return _carRepository.GetAll();
+        return await _carRepository.GetAll();
     }
 
-    public CarResponse? Get(int id)
+    public async Task<CarResponse?> Get(int id)
     {
-        return _carRepository.Get(id);
+        return await _carRepository.Get(id);
     }
 
-    public CarResponse? GetCar(string registration)
+    public async Task<CarResponse?> GetCar(string registration)
     {
-        return _carRepository.GetCar(registration);
+        return await _carRepository.GetCar(registration);
     }
 
-    public IEnumerable<Car> GetAvailableCarsFromType()
+    public async Task<IEnumerable<Car>> GetAvailableCarsFromType()
     {
-        return _carRepository.GetAvailableCars();
+        return await _carRepository.GetAvailableCars();
     }
 
-    public CarResponse Add(CarRequest.CreateRequest newCar)
+    public async Task<CarResponse> Add(CarRequest.CreateRequest newCar)
     {
-        return _carRepository.Add(newCar);
+        return await _carRepository.Add(newCar);
     }
 
     public async Task Delete(int id)
     {
-        var carToDelete = _carRepository.Get(id);
+        var carToDelete = await _carRepository.Get(id);
 
         if (carToDelete != null)
         {
@@ -87,9 +87,9 @@ public class CarBusiness : ICarBusiness
         await _carRepository.DeleteCarsFromType(carsToDelete);
     }
 
-    public CarResponse Update(CarRequest.UpdateRequest car)
+    public async Task<CarResponse> Update(CarRequest.UpdateRequest car)
     {
-        var getCar = _carRepository.Get(car.Id);
+        var getCar = await _carRepository.Get(car.Id);
 
         if (getCar != null)
         {
@@ -100,7 +100,7 @@ public class CarBusiness : ICarBusiness
                 CarTypeId = car.CarTypeId
             };
 
-            return _carRepository.Update(carToUpdate);
+            return await _carRepository.Update(carToUpdate);
         }
 
         return null;
