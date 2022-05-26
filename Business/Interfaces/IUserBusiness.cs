@@ -4,10 +4,10 @@ using CentRent.Entities;
 namespace CentRent.Interfaces;
 
 public interface IUserBusiness{
-    LoginResponse Login(UserRequest.LoginRequest model);
-    IEnumerable<UserResponse> GetAll();
-    UserResponse GetByEmail(string email);
-    User Get(string email);
-    UserResponse Register(UserRequest.RegisterRequest newUser);
-    void Delete(string email);
+    Task<LoginResponse> Login(UserRequest.LoginRequest model);
+    Task<IEnumerable<UserResponse>> GetAll();
+    Task<UserResponse> GetByEmail(string email);
+    Task<User> Get(string email);
+    Task<UserResponse> Register(UserRequest.RegisterRequest newUser);
+    Task Delete(string email);
 }

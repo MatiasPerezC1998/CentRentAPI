@@ -9,5 +9,18 @@ namespace CentRent.Entities
         public string? LastName { get; set; }
         public string? Username { get; set; }
         public string? Password { get; set; }
+
+        public User (UserRequest.RegisterRequest user)
+        {
+            Email = user.Email;
+            FirstName = user.FirstName;
+            LastName = user.LastName;
+            Username = user.Username;
+            Password = user.Password;
+        }
+
+        public User () {
+
+        }
     }
 }

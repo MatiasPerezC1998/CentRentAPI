@@ -7,7 +7,7 @@ public static class Extensions {
                 var services = scope.ServiceProvider;
                 var context = services.GetRequiredService<CentRentContext>();
                 if (context.Database.EnsureCreated()) {
-                    DbInitializer.Initialize(context);
+                    //DbInitializer.Initialize(context);
                 }
             }
         }

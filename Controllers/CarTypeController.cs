@@ -17,9 +17,9 @@ public class CarTypeController : ControllerBase
     }
 
     [HttpGet("GetAll")]
-    public IEnumerable<CarTypeResponse> GetAll()
+    public async Task<IEnumerable<CarTypeResponse>> GetAll()
     {
-        return _carTypeBusiness.GetAll();
+        return await _carTypeBusiness.GetAll();
     }
 
     [HttpGet("GetById")]
@@ -59,16 +59,16 @@ public class CarTypeController : ControllerBase
     }
 
     [HttpPost("Delete")]
-    public IActionResult Delete([FromForm] int id)
+    public async Task<IActionResult> Delete([FromForm] int id)
     {
-        var car = _carTypeBusiness.Get(id);
+        var car = await _carTypeBusiness.Get(id);
 
         if (car is null)
         {
             return NotFound();
         }
 
-        _carTypeBusiness.Delete(id);
+        await _carTypeBusiness.Delete(id);
 
         return Ok();
     }

@@ -18,9 +18,10 @@ public class CarTypeBusiness : ICarTypeBusiness
         _carBusiness = carBusiness;
     }
 
-    public IEnumerable<CarTypeResponse> GetAll()
+    public async Task<IEnumerable<CarTypeResponse>> GetAll()
     {
-        return _carTypeRepository.GetAll();
+        var allCarTypes = await _carTypeRepository.GetAll();
+        return new List<CarTypeResponse>(allCarTypes.Select(p => new CarTypeResponse(p)));
     }
 
     public async Task<CarTypeResponse?> Get(int id)
@@ -40,7 +41,8 @@ public class CarTypeBusiness : ICarTypeBusiness
             SaveImage(newCar.File);
         }
 
-        return await _carTypeRepository.Add(newCar);
+        var carTypeToAdd = new CarType(newCar);
+        return new CarTypeResponse(await _carTypeRepository.Add(carTypeToAdd));
     }
 
     public async Task Delete(int id)
@@ -55,24 +57,29 @@ public class CarTypeBusiness : ICarTypeBusiness
                 await _carBusiness.CustomerFinishRentingFromType(carsToDelete);
             }
 
+            if (carTypeToDelete.Image != null)
+            {
+                DeleteImage(carTypeToDelete.Image);
+            }
+
             await _carTypeRepository.Delete(carTypeToDelete);
         }
     }
 
-    public async Task<CarTypeResponse> Update(CarTypeRequest.UpdateRequest car)
+    public async Task<CarTypeResponse> Update(CarTypeRequest.UpdateRequest carType)
     {
-        if (car.File != null)
+        if (carType.File != null)
         {
-            SaveImage(car.File);
+            SaveImage(carType.File);
         }
 
-        var getCarType = await _carTypeRepository.Get(car.Id);
+        var getCarType = await _carTypeRepository.Get(carType.Id);
 
         if (getCarType != null)
         {
-            var carTypeToUpdate = new CarType(car);
+            var carTypeToUpdate = new CarType(carType);
 
-            return await _carTypeRepository.Update(carTypeToUpdate);
+            return new CarTypeResponse(await _carTypeRepository.Update(carTypeToUpdate));
         }
 
         return null;
@@ -97,10 +104,9 @@ public class CarTypeBusiness : ICarTypeBusiness
         }
     }
 
-    private void DeleteImage(IFormFile file)
+    private void DeleteImage(string file)
     {
-        //var filePath = Server.MapPath("~/Images/" + file.FileName);
-        string path = Path.Combine(Directory.GetCurrentDirectory(), "Images", file.FileName);
+        string path = Path.Combine(Directory.GetCurrentDirectory(), "Images", file);
 
         if (System.IO.File.Exists(path))
         {

@@ -13,10 +13,10 @@ public class CustomerRepository : ICustomerRepository
         _context = context;
     }
 
-    public async Task<IEnumerable<CustomerResponse>> GetAll()
+    public async Task<IEnumerable<Customer>> GetAll()
     {
         return await _context.Customers
-            .Select(p => new CustomerResponse(p))
+            .Select(p => p)
             .ToListAsync();
     }
 
@@ -39,29 +39,28 @@ public class CustomerRepository : ICustomerRepository
         // return null;
     }
 
-    public async Task<CustomerResponse?> GetCustomer(string email)
+    public async Task<Customer?> GetCustomer(string email)
     {
         var customer = await _context.Customers
             .SingleOrDefaultAsync(p => p.Email == email);
 
         if (customer != null)
         {
-            return new CustomerResponse(customer);
+            return customer;
         }
 
         return null;
     }
 
-    public async Task<CustomerResponse> Add(CustomerRequest.CreateRequest newCustomer)
+    public async Task<Customer> Add(Customer newCustomer)
     {
         var transaction = _context.Database.BeginTransaction();
-        var customer = new Customer(newCustomer);
 
-        _context.Customers.Add(customer);
+        _context.Customers.Add(newCustomer);
         await _context.SaveChangesAsync();
         await transaction.CommitAsync();
 
-        return new CustomerResponse(customer);
+        return newCustomer;
     }
 
     public async Task Delete(Customer customer)
@@ -72,7 +71,7 @@ public class CustomerRepository : ICustomerRepository
         await transaction.CommitAsync();
     }
 
-    public async Task<CustomerResponse> Update(Customer customer)
+    public async Task<Customer> Update(Customer customer)
     {
         try
         {
@@ -81,7 +80,7 @@ public class CustomerRepository : ICustomerRepository
             await _context.SaveChangesAsync();
             await transaction.CommitAsync();
 
-            return new CustomerResponse(customer);
+            return customer;
         }
         catch (Exception ex)
         {

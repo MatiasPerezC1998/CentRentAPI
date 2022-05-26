@@ -4,7 +4,7 @@ namespace CentRent.Interfaces;
 
 public interface ICarTypeBusiness
 {
-    IEnumerable<CarTypeResponse> GetAll();
+    Task<IEnumerable<CarTypeResponse>> GetAll();
     Task<CarTypeResponse?> Get(int id);
     Task<CarTypeResponse> Add(CarTypeRequest.CreateRequest newCar);
     Task<CarTypeResponse> Update(CarTypeRequest.UpdateRequest car);

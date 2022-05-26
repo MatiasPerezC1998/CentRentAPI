@@ -25,5 +25,17 @@ namespace CentRent.Models
             Image = car.CarType.Image;
             CarTypeId = car.CarType.Id;
         }
+
+        public CarResponse(Car car, int isRented)
+        {
+            Id = car.Id;
+            IsRented = isRented;
+            Registration = car.Registration;
+            Brand = car.CarType.Brand;
+            Model = car.CarType.Model;
+            Type = car.CarType.Type;
+            Image = car.CarType.Image;
+            CarTypeId = car.CarType.Id;
+        }
     }
 }

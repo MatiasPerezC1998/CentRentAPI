@@ -18,16 +18,16 @@ public class UserController : ControllerBase
 
     [Authorize]
     [HttpGet("Authorization")]
-    public IActionResult GetAll()
+    public async Task<IActionResult> GetAll()
     {
-        var users = _userBusiness.GetAll();
+        var users = await _userBusiness.GetAll();
         return Ok(users);
     }
 
     [HttpGet("{email}")]
-    public ActionResult<UserResponse> Get(string email)
+    public async Task<ActionResult<UserResponse>> Get(string email)
     {
-        var login = _userBusiness.GetByEmail(email);
+        var login = await _userBusiness.GetByEmail(email);
 
         if (login == null)
         {
@@ -38,9 +38,9 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("Login")]
-    public ActionResult<LoginResponse> Login([FromForm] UserRequest.LoginRequest model)
+    public async Task<ActionResult<LoginResponse>> Login([FromForm] UserRequest.LoginRequest model)
     {
-        var response = _userBusiness.Login(model);
+        var response = await _userBusiness.Login(model);
 
         if (response == null)
         {
@@ -54,23 +54,23 @@ public class UserController : ControllerBase
     // public IEnumerable<Log> GetAll() => _logService.GetAll();
 
     [HttpPost("Register")]
-    public ActionResult<UserResponse> Register([FromForm] UserRequest.RegisterRequest user)
+    public async Task<ActionResult<UserResponse>> Register([FromForm] UserRequest.RegisterRequest user)
     {
-        var newUser = _userBusiness.Register(user);
+        var newUser = await _userBusiness.Register(user);
         return Ok(newUser);
     }
 
     [HttpDelete("{email}")]
-    public IActionResult Delete(string email)
+    public async Task<IActionResult> Delete(string email)
     {
-        var user = _userBusiness.Get(email);
+        var user = await _userBusiness.Get(email);
 
         if (user is null)
         {
             return NotFound();
         }
 
-        _userBusiness.Delete(email);
+        await _userBusiness.Delete(email);
 
         return NoContent();
     }

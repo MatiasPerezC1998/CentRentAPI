@@ -12,12 +12,12 @@ public class CarTypeRepository : ICarTypeRepository
         _context = context;
     }
 
-    public IEnumerable<CarTypeResponse> GetAll()
+    public async Task<IEnumerable<CarType>> GetAll()
     {
-        return _context.CarTypes
+        return await _context.CarTypes
             .Include(x => x.Cars)
-            .Select(p => new CarTypeResponse(p))
-            .ToList();
+            .Select(p => p)
+            .ToListAsync();
     }
 
     public async Task<CarType?> Get(int id)
@@ -27,16 +27,15 @@ public class CarTypeRepository : ICarTypeRepository
             .SingleOrDefaultAsync(p => p.Id == id);
     }
 
-    public async Task<CarTypeResponse> Add(CarTypeRequest.CreateRequest newCarType)
+    public async Task<CarType> Add(CarType newCarType)
     {
         var transaction = _context.Database.BeginTransaction();
-        var carType = new CarType(newCarType);
 
-        _context.CarTypes.Add(carType);
+        _context.CarTypes.Add(newCarType);
         await _context.SaveChangesAsync();
         await transaction.CommitAsync();
 
-        return new CarTypeResponse(carType);
+        return newCarType;
     }
 
     public async Task Delete(CarType carType)
@@ -48,14 +47,14 @@ public class CarTypeRepository : ICarTypeRepository
     }
 
 
-    public async Task<CarTypeResponse> Update(CarType carType)
+    public async Task<CarType> Update(CarType carType)
     {
         var transaction = _context.Database.BeginTransaction();
         _context.CarTypes.Update(carType);
         await _context.SaveChangesAsync();
         await transaction.CommitAsync();
 
-        return new CarTypeResponse(carType);
+        return carType;
     }
 
 }

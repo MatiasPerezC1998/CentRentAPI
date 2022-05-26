@@ -22,12 +22,17 @@ public class UserBusiness : IUserBusiness
         _appSettings = appSettings.Value;
     }
 
-    public LoginResponse Login(UserRequest.LoginRequest model)
+    public async Task<LoginResponse> Login(UserRequest.LoginRequest model)
     {
-        var user = _userRepository.Login(model);
+        // var login = new UserRequest.LoginRequest(model);
+        // var login = new UserRequest.LoginRequest(model);
+        var user = await _userRepository.Login(model);
 
         // return null if user not found
-        if (user == null) return null;
+        if (user == null) 
+        {
+            return null;
+        }
 
         // authentication successful so generate jwt token
         var token = generateJwtToken(user);
@@ -35,32 +40,34 @@ public class UserBusiness : IUserBusiness
         return new LoginResponse(user, token);
     }
 
-    public IEnumerable<UserResponse> GetAll()
+    public async Task<IEnumerable<UserResponse>> GetAll()
     {
-        return _userRepository.GetAll();
+        var allUsers = await _userRepository.GetAll();
+        return new List<UserResponse>(allUsers.Select(p => new UserResponse(p)));
     }
 
-    public UserResponse GetByEmail(string email)
+    public async Task<UserResponse> GetByEmail(string email)
     {
-        return _userRepository.GetByEmail(email);
+        return new UserResponse(await _userRepository.GetByEmail(email));
     }
 
-    public User Get(string email)
+    public async Task<User> Get(string email)
     {
-        return _userRepository.Get(email);
+        return await _userRepository.Get(email);
     }
 
-    public UserResponse Register(UserRequest.RegisterRequest newUser)
+    public async Task<UserResponse> Register(UserRequest.RegisterRequest newUser)
     {
-        return _userRepository.Register(newUser);
+        var registerToAdd = new User(newUser);
+        return new UserResponse(await _userRepository.Register(registerToAdd));
     }
 
-    public void Delete(string email)
+    public async Task Delete(string email)
     {
-        var userToDelete = _userRepository.Get(email);
+        var userToDelete = await _userRepository.Get(email);
         if (userToDelete is not null)
         {
-            _userRepository.Delete(userToDelete);
+            await _userRepository.Delete(userToDelete);
         }        
     }
 

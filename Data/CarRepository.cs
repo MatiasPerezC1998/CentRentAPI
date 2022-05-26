@@ -12,24 +12,24 @@ public class CarRepository : ICarRepository
         _context = context;
     }
 
-    public async Task<IEnumerable<CarResponse>> GetAll()
+    public async Task<List<Car>> GetAll()
     {
         return await _context.Cars
             .Include(x => x.CarType)
-            .Select(p => new CarResponse(p))
+            .Select(p => p)
             .ToListAsync();
     }
 
-    public async Task<CarResponse?> Get(int id)
+    public async Task<Car?> Get(int id)
     {
         var car = await _context.Cars
             .Include(x => x.CarType)
             .SingleOrDefaultAsync(p => p.Id == id);
 
-        return new CarResponse(car);
+        return car;
     }
 
-    public async Task<CarResponse?> GetCar(string registration)
+    public async Task<Car?> GetCar(string registration)
     {
         var car = await _context.Cars
             .Include(x => x.CarType)
@@ -37,7 +37,7 @@ public class CarRepository : ICarRepository
 
         if (car != null)
         {
-            return new CarResponse(car);
+            return car;
         }
 
         return null;
@@ -46,33 +46,38 @@ public class CarRepository : ICarRepository
     public async Task<IEnumerable<Car>> GetAvailableCars()
     {
         var cars = await _context.Cars
+            .Include(x => x.CarType)
             .Where(car => car.IsRented == 0)
             .ToListAsync();
         return cars;
     }
 
-    public async Task<CarResponse> Add(CarRequest.CreateRequest newCar)
+    public async Task<Car> Add(Car newCar)
     {
         var transaction = _context.Database.BeginTransaction();
-        var car = new Car(newCar);
 
-        _context.Cars.Add(car);
+        _context.Cars.Add(newCar);
         await _context.SaveChangesAsync();
         await transaction.CommitAsync();
 
-        return await Get(car.Id);
+        return await Get(newCar.Id);
     }
 
     public async Task Delete(Car car)
     {
-        var transaction = _context.Database.BeginTransaction();
-        _context.Cars.Remove(car);
-        await _context.SaveChangesAsync();
-        await transaction.CommitAsync();
+        try {
+            var transaction = _context.Database.BeginTransaction();
+            _context.Cars.Remove(car);
+            await _context.SaveChangesAsync();
+            await transaction.CommitAsync();
+        } catch (Exception ex) {
+            Console.WriteLine(ex);
+        }
+        
     }
 
 
-    public async Task<CarResponse> Update(Car car)
+    public async Task<Car> Update(Car car)
     {
         var carToUpdate = await _context.Cars.SingleOrDefaultAsync(x => x.Id == car.Id);
         if (carToUpdate != null)
@@ -90,9 +95,9 @@ public class CarRepository : ICarRepository
         return await Get(car.Id);
     }
 
-    public Task<List<Car>> GetCarTypeId(int carTypeId)
+    public async Task<List<Car>> GetCarTypeId(int carTypeId)
     {
-        var carList = _context.Cars
+        var carList = await _context.Cars
             .Include(x => x.CarType)
             .Where(p => p.CarTypeId == carTypeId)
             .ToListAsync();

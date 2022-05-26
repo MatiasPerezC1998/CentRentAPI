@@ -17,33 +17,34 @@ public class CarBusiness : ICarBusiness
 
     public async Task<IEnumerable<CarResponse>> GetAll()
     {
-        return await _carRepository.GetAll();
+        var allCars = await _carRepository.GetAll();
+        return new List<CarResponse> (allCars.Select(p => new CarResponse(p)));
     }
 
     public async Task<CarResponse?> Get(int id)
     {
-        return await _carRepository.Get(id);
+        return new CarResponse (await _carRepository.Get(id));
     }
 
     public async Task<CarResponse?> GetCar(string registration)
     {
-        return await _carRepository.GetCar(registration);
+        return new CarResponse(await _carRepository.GetCar(registration));
     }
 
-    public async Task<IEnumerable<Car>> GetAvailableCarsFromType()
+    public async Task<IEnumerable<CarResponse>> GetAvailableCarsFromType()
     {
-        return await _carRepository.GetAvailableCars();
+        var allAvailableCars = await _carRepository.GetAvailableCars();
+        return new List<CarResponse> (allAvailableCars.Select(x => new CarResponse(x)));
     }
 
     public async Task<CarResponse> Add(CarRequest.CreateRequest newCar)
     {
-        return await _carRepository.Add(newCar);
+        var carToAdd = new Car(newCar);
+        return new CarResponse (await _carRepository.Add(carToAdd));
     }
 
-    public async Task Delete(int id)
+    public async Task Delete(CarResponse carToDelete)
     {
-        var carToDelete = await _carRepository.Get(id);
-
         if (carToDelete != null)
         {
             // SI SE ELIMINA UN COCHE SU CLIENTE PASA A NO TENER COCHE DE ALQUILER
@@ -60,7 +61,7 @@ public class CarBusiness : ICarBusiness
                 }
             }
 
-            var car = new Car(carToDelete);
+            var car = await _carRepository.Get(carToDelete.Id);
 
             await _carRepository.Delete(car);
         }
@@ -99,8 +100,10 @@ public class CarBusiness : ICarBusiness
                 Registration = car.Registration ?? getCar.Registration,
                 CarTypeId = car.CarTypeId
             };
+            
 
-            return await _carRepository.Update(carToUpdate);
+
+            return new CarResponse(await _carRepository.Update(carToUpdate));
         }
 
         return null;

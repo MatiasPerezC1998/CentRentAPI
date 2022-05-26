@@ -89,7 +89,7 @@ public class CarController : ControllerBase
             return NotFound();
         }
 
-        await _carBusiness.Delete(id);
+        await _carBusiness.Delete(car);
 
         return Ok();
     }

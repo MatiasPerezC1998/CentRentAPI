@@ -15,10 +15,10 @@ public class UserRepository : IUserRepository
         _context = context;
     }
 
-    public User Login(UserRequest.LoginRequest model)
+    public async Task<User> Login(UserRequest.LoginRequest model)
     {
-        var user = _context.Users
-            .SingleOrDefault(x =>
+        var user = await _context.Users
+            .SingleOrDefaultAsync(x =>
                 x.Username == model.Username &&
                 x.Password == model.Password
             );
@@ -26,49 +26,41 @@ public class UserRepository : IUserRepository
         return user;
     }
 
-    public IEnumerable<UserResponse> GetAll()
+    public async Task<IEnumerable<User>> GetAll()
     {
-        return _context.Users
-            .Select(p => new UserResponse(p))
-            .ToList();
+        return await _context.Users
+            .Select(p => p)
+            .ToListAsync();
     }
 
-    public UserResponse GetByEmail(string email)
+    public async Task<User> GetByEmail(string email)
     {
-        var user = _context.Users.FirstOrDefault(x => x.Email == email);
-
-        return new UserResponse(user);
-    }
-
-    public User Get(string email)
-    {
-        var user = _context.Users
-            .AsNoTracking()
-            .SingleOrDefault(p => p.Email == email);
+        var user = await _context.Users
+            .FirstOrDefaultAsync(x => x.Email == email);
 
         return user;
     }
 
-    public UserResponse Register(UserRequest.RegisterRequest newUser)
+    public async Task<User> Get(string email)
     {
-        var user = new User
-        {
-            Email = newUser.Email,
-            FirstName = newUser.FirstName,
-            LastName = newUser.LastName,
-            Password = newUser.Password,
-            Username =  newUser.Username
-        };
+        var user = await _context.Users
+            .AsNoTracking()
+            .SingleOrDefaultAsync(p => p.Email == email);
 
-        _context.Users.Add(user);
-        _context.SaveChanges();
-
-        return new UserResponse(user);
+        return user;
     }
 
-    public void Delete(User user)
+    public async Task<User> Register(User newUser)
+    {
+        _context.Users.Add(newUser);
+        await _context.SaveChangesAsync();
+
+        return newUser;
+    }
+
+    public async Task Delete(User user)
     {
         _context.Users.Remove(user);
-        _context.SaveChanges();     
+        await _context.SaveChangesAsync();     
     }
 }

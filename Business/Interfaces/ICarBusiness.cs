@@ -8,9 +8,9 @@ public interface ICarBusiness
     Task<IEnumerable<CarResponse>> GetAll();
     Task<CarResponse?> Get(int id);
     Task<CarResponse?> GetCar(string registration);
-    Task<IEnumerable<Car>> GetAvailableCarsFromType();
+    Task<IEnumerable<CarResponse>> GetAvailableCarsFromType();
     Task<CarResponse> Add(CarRequest.CreateRequest newCar);
     Task<CarResponse> Update(CarRequest.UpdateRequest car);
-    Task Delete(int id);
+    Task Delete(CarResponse carToDelete);
     Task CustomerFinishRentingFromType(IEnumerable<Car> carsToDelete);
 }
