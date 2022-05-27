@@ -97,6 +97,7 @@ public class CarController : ControllerBase
     }
 
     [HttpGet("GetImage")]
+    [AllowAnonymous]
     public ActionResult GetImage(String imageUrl)
     {
         string path = Path.Combine(Directory.GetCurrentDirectory(), "Images", imageUrl);
