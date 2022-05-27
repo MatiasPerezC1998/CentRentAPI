@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using CentRent.Models;
 using CentRent.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CentRent.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("[controller]")]
 public class CustomerController : ControllerBase
@@ -29,8 +31,10 @@ public class CustomerController : ControllerBase
         if (customer is not null)
         {
             return customer;
-            
-        } else {
+
+        }
+        else
+        {
 
             return NotFound();
 
@@ -45,7 +49,9 @@ public class CustomerController : ControllerBase
         if (customer is not null)
         {
             return customer;
-        } else {
+        }
+        else
+        {
             return NotFound("No existe ningún cliente con ese nombre");
         }
     }

@@ -29,7 +29,7 @@ public class UserBusiness : IUserBusiness
         var user = await _userRepository.Login(model);
 
         // return null if user not found
-        if (user == null) 
+        if (user == null)
         {
             return null;
         }
@@ -68,7 +68,7 @@ public class UserBusiness : IUserBusiness
         if (userToDelete is not null)
         {
             await _userRepository.Delete(userToDelete);
-        }        
+        }
     }
 
     private string generateJwtToken(User user)
@@ -79,9 +79,11 @@ public class UserBusiness : IUserBusiness
         var time = _appSettings.Time;
         var tokenDescriptor = new SecurityTokenDescriptor
         {
+            Issuer = _appSettings.Issuer,
+            Audience = _appSettings.Audience,
             Subject = new ClaimsIdentity(new[] { new Claim("email", user.Email) }),
             Expires = DateTime.UtcNow.AddDays(time),
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
         };
         var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);

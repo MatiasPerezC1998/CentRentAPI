@@ -65,32 +65,27 @@ public class CarRepository : ICarRepository
 
     public async Task Delete(Car car)
     {
-        try {
+        try
+        {
             var transaction = _context.Database.BeginTransaction();
             _context.Cars.Remove(car);
             await _context.SaveChangesAsync();
             await transaction.CommitAsync();
-        } catch (Exception ex) {
+        }
+        catch (Exception ex)
+        {
             Console.WriteLine(ex);
         }
-        
+
     }
 
 
     public async Task<Car> Update(Car car)
     {
-        var carToUpdate = await _context.Cars.SingleOrDefaultAsync(x => x.Id == car.Id);
-        if (carToUpdate != null)
-        {
-            carToUpdate.CarTypeId = car.CarTypeId;
-            carToUpdate.IsRented = car.IsRented;
-            carToUpdate.Registration = car.Registration;
-
-            var transaction = _context.Database.BeginTransaction();
-            _context.Cars.Update(carToUpdate);
-            await _context.SaveChangesAsync();
-            await transaction.CommitAsync();
-        }
+        var transaction = _context.Database.BeginTransaction();
+        _context.Cars.Update(car);
+        await _context.SaveChangesAsync();
+        await transaction.CommitAsync();
 
         return await Get(car.Id);
     }

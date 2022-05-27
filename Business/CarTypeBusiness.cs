@@ -77,9 +77,14 @@ public class CarTypeBusiness : ICarTypeBusiness
 
         if (getCarType != null)
         {
-            var carTypeToUpdate = new CarType(carType);
+            getCarType.Brand = carType.Brand;
+            getCarType.Model = carType.Model;
+            getCarType.Type = carType.Type;
+            getCarType.Image = carType?.File?.FileName ?? getCarType.Image;
 
-            return new CarTypeResponse(await _carTypeRepository.Update(carTypeToUpdate));
+            var carTypeUpdated = await _carTypeRepository.Update(getCarType);
+
+            return new CarTypeResponse(carTypeUpdated);
         }
 
         return null;

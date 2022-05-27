@@ -1,10 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
-using CentRent.Helpers;
 using CentRent.Models;
 using CentRent.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CentRent.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("[controller]")]
 public class UserController : ControllerBase
@@ -16,7 +17,6 @@ public class UserController : ControllerBase
         _userBusiness = userBusiness;
     }
 
-    [Authorize]
     [HttpGet("Authorization")]
     public async Task<IActionResult> GetAll()
     {
@@ -38,6 +38,7 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("Login")]
+    [AllowAnonymous]
     public async Task<ActionResult<LoginResponse>> Login([FromForm] UserRequest.LoginRequest model)
     {
         var response = await _userBusiness.Login(model);
@@ -54,6 +55,7 @@ public class UserController : ControllerBase
     // public IEnumerable<Log> GetAll() => _logService.GetAll();
 
     [HttpPost("Register")]
+    [AllowAnonymous]
     public async Task<ActionResult<UserResponse>> Register([FromForm] UserRequest.RegisterRequest user)
     {
         var newUser = await _userBusiness.Register(user);

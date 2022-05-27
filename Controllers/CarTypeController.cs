@@ -1,10 +1,11 @@
-
 using CentRent.Models;
 using CentRent.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CentRent.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("[controller]")]
 public class CarTypeController : ControllerBase
